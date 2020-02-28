@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="ff546bdb9e304ea8910d25d97f30aab0" Name="Diagram1" ZoomLevel="94">
+        <EntityTypeShape EntityType="DGAMilDocModel.DocumentAttachment" Width="2.75" PointX="6.75" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DGAMilDocModel.DocumentReference" Width="1.5" PointX="7.125" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DGAMilDocModel.Organization" Width="2.625" PointX="6.75" PointY="4.125" />
+        <AssociationConnector Association="DGAMilDocModel.FK_DocumentIn_
+                              " />
+        <EntityTypeShape EntityType="DGAMilDocModel.Document" Width="1.5" PointX="3" PointY="1.625" />
+        <AssociationConnector Association="DGAMilDocModel.FK_Document_Organization" />
+        <AssociationConnector Association="DGAMilDocModel.FK_Document_Organization1" />
+        <AssociationConnector Association="DGAMilDocModel.FK_DocumentAttachment_Document" />
+        <AssociationConnector Association="DGAMilDocModel.FK_DocumentReference_Document" />
+        <EntityTypeShape EntityType="DGAMilDocModel.DocumentIn" Width="1.5" PointX="11.375" PointY="1.875" />
+        <AssociationConnector Association="DGAMilDocModel.FK_DocumentAttachment_DocumentIn" />
+        <AssociationConnector Association="DGAMilDocModel.FK_DocumentIn_Organization" />
+        <AssociationConnector Association="DGAMilDocModel.FK_DocumentIn_Organization1" />
+        <AssociationConnector Association="DGAMilDocModel.FK_DocumentReference_DocumentIn" />
+        <EntityTypeShape EntityType="DGAMilDocModel.DocumentProcess" Width="1.5" PointX="7.125" PointY="10.25" />
+        <EntityTypeShape EntityType="DGAMilDocModel.User" Width="1.5" PointX="13.875" PointY="5.375" />
+        <AssociationConnector Association="DGAMilDocModel.FK_DocumentProcess_Document" />
+        <AssociationConnector Association="DGAMilDocModel.FK_User_Organization" />
+        <AssociationConnector Association="DGAMilDocModel.FK_DocumentProcess_DocumentIn" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

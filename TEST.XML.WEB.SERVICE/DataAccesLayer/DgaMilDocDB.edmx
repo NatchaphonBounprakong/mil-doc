@@ -1,0 +1,820 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="DGAMilDocModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Document">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BookId" Type="nvarchar(max)" />
+          <Property Name="ProcessId" Type="nvarchar(max)" />
+          <Property Name="No" Type="nvarchar(max)" />
+          <Property Name="From" Type="nvarchar(max)" />
+          <Property Name="Type" Type="nvarchar(max)" />
+          <Property Name="Date" Type="nvarchar(max)" />
+          <Property Name="Subject" Type="nvarchar(max)" />
+          <Property Name="Speed" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Secret" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="MainAttachmentName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="MainAttachmentBinary" Type="varbinary(max)" />
+          <Property Name="MimeCode" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="SenderPosition" Type="nvarchar(max)" />
+          <Property Name="SenderName" Type="nvarchar(max)" />
+          <Property Name="SenderSurname" Type="nvarchar(max)" />
+          <Property Name="SenderOrganizationId" Type="int" Nullable="false" />
+          <Property Name="ReceiverName" Type="nvarchar(max)" />
+          <Property Name="ReceiverSurname" Type="nvarchar(max)" />
+          <Property Name="ReceiverPosition" Type="nvarchar(max)" />
+          <Property Name="ReceiverOrganizationId" Type="int" Nullable="false" />
+          <Property Name="AttachmentDescription" Type="nvarchar(max)" />
+          <Property Name="CreatedDate" Type="date" />
+          <Property Name="Status" Type="nvarchar(max)" />
+          <Property Name="AcceptId" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="DocumentAttachment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocumentId" Type="int" />
+          <Property Name="DocumentInId" Type="int" />
+          <Property Name="AttachmentName" Type="nvarchar(max)" />
+          <Property Name="AttachmentBinary" Type="varbinary(max)" />
+          <Property Name="MimeCode" Type="nvarchar(max)" />
+          <Property Name="State" Type="nvarchar" MaxLength="50" />
+          <Property Name="Type" Type="nvarchar" MaxLength="1" />
+        </EntityType>
+        <EntityType Name="DocumentIn">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BookId" Type="nvarchar(max)" />
+          <Property Name="ProcessId" Type="nvarchar" MaxLength="50" />
+          <Property Name="No" Type="nvarchar(max)" />
+          <Property Name="From" Type="nvarchar(max)" />
+          <Property Name="Type" Type="nvarchar(max)" />
+          <Property Name="Date" Type="nvarchar(max)" />
+          <Property Name="Subject" Type="nvarchar(max)" />
+          <Property Name="Speed" Type="nvarchar(max)" />
+          <Property Name="Secret" Type="nvarchar(max)" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="MainAttachmentName" Type="nvarchar(max)" />
+          <Property Name="MainAttachmentBinary" Type="varbinary(max)" />
+          <Property Name="MimeCode" Type="nvarchar(max)" />
+          <Property Name="SenderPosition" Type="nvarchar(max)" />
+          <Property Name="SenderName" Type="nvarchar(max)" />
+          <Property Name="SenderSurname" Type="nvarchar(max)" />
+          <Property Name="SenderOrganizationId" Type="int" Nullable="false" />
+          <Property Name="ReceiverName" Type="nvarchar(max)" />
+          <Property Name="ReceiverSurname" Type="nvarchar(max)" />
+          <Property Name="ReceiverPosition" Type="nvarchar(max)" />
+          <Property Name="ReceiverOrganizationId" Type="int" Nullable="false" />
+          <Property Name="AttachmentDescription" Type="nvarchar(max)" />
+          <Property Name="CreatedDate" Type="date" />
+          <Property Name="SendDate" Type="nvarchar(max)" />
+          <Property Name="Status" Type="nvarchar(max)" />
+          <Property Name="AcceptId" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="DocumentProcess">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocumentId" Type="int" />
+          <Property Name="DocumentInId" Type="int" />
+          <Property Name="ProcessId" Type="nvarchar" MaxLength="50" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedDate" Type="date" />
+        </EntityType>
+        <EntityType Name="DocumentReference">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocumentId" Type="int" />
+          <Property Name="DocumentInId" Type="int" />
+          <Property Name="ReferenceBookNo" Type="nvarchar(max)" />
+          <Property Name="ReferenceBookDate" Type="nvarchar(max)" />
+          <Property Name="ReferenceBookSubject" Type="nvarchar(max)" />
+          <Property Name="State" Type="nvarchar" MaxLength="50" />
+          <Property Name="Type" Type="int" />
+        </EntityType>
+        <EntityType Name="Organization">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="Code" Type="nvarchar(max)" />
+          <Property Name="Url" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="50" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" />
+          <Property Name="Token" Type="nvarchar" MaxLength="50" />
+          <Property Name="Expire" Type="date" />
+          <Property Name="OrganizationId" Type="int" />
+        </EntityType>
+        <Association Name="FK_Document_Organization">
+          <End Role="Organization" Type="Self.Organization" Multiplicity="1" />
+          <End Role="Document" Type="Self.Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organization">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Document">
+              <PropertyRef Name="SenderOrganizationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_Organization1">
+          <End Role="Organization" Type="Self.Organization" Multiplicity="1" />
+          <End Role="Document" Type="Self.Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organization">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Document">
+              <PropertyRef Name="ReceiverOrganizationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentAttachment_Document">
+          <End Role="Document" Type="Self.Document" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="DocumentAttachment" Type="Self.DocumentAttachment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Document">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DocumentAttachment">
+              <PropertyRef Name="DocumentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentAttachment_DocumentIn">
+          <End Role="DocumentIn" Type="Self.DocumentIn" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="DocumentAttachment" Type="Self.DocumentAttachment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DocumentIn">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DocumentAttachment">
+              <PropertyRef Name="DocumentInId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentIn_Organization">
+          <End Role="Organization" Type="Self.Organization" Multiplicity="1" />
+          <End Role="DocumentIn" Type="Self.DocumentIn" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organization">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DocumentIn">
+              <PropertyRef Name="SenderOrganizationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentIn_Organization1">
+          <End Role="Organization" Type="Self.Organization" Multiplicity="1" />
+          <End Role="DocumentIn" Type="Self.DocumentIn" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organization">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DocumentIn">
+              <PropertyRef Name="ReceiverOrganizationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentProcess_Document">
+          <End Role="Document" Type="Self.Document" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="DocumentProcess" Type="Self.DocumentProcess" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Document">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DocumentProcess">
+              <PropertyRef Name="DocumentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentProcess_DocumentIn">
+          <End Role="DocumentIn" Type="Self.DocumentIn" Multiplicity="0..1" />
+          <End Role="DocumentProcess" Type="Self.DocumentProcess" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DocumentIn">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DocumentProcess">
+              <PropertyRef Name="DocumentInId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentReference_Document">
+          <End Role="Document" Type="Self.Document" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="DocumentReference" Type="Self.DocumentReference" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Document">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DocumentReference">
+              <PropertyRef Name="DocumentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentReference_DocumentIn">
+          <End Role="DocumentIn" Type="Self.DocumentIn" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="DocumentReference" Type="Self.DocumentReference" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DocumentIn">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DocumentReference">
+              <PropertyRef Name="DocumentInId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Organization">
+          <End Role="Organization" Type="Self.Organization" Multiplicity="0..1" />
+          <End Role="User" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organization">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="OrganizationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DGAMilDocModelStoreContainer">
+          <EntitySet Name="Document" EntityType="Self.Document" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DocumentAttachment" EntityType="Self.DocumentAttachment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DocumentIn" EntityType="Self.DocumentIn" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DocumentProcess" EntityType="Self.DocumentProcess" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DocumentReference" EntityType="Self.DocumentReference" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Organization" EntityType="Self.Organization" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Document_Organization" Association="Self.FK_Document_Organization">
+            <End Role="Organization" EntitySet="Organization" />
+            <End Role="Document" EntitySet="Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_Organization1" Association="Self.FK_Document_Organization1">
+            <End Role="Organization" EntitySet="Organization" />
+            <End Role="Document" EntitySet="Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentAttachment_Document" Association="Self.FK_DocumentAttachment_Document">
+            <End Role="Document" EntitySet="Document" />
+            <End Role="DocumentAttachment" EntitySet="DocumentAttachment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentAttachment_DocumentIn" Association="Self.FK_DocumentAttachment_DocumentIn">
+            <End Role="DocumentIn" EntitySet="DocumentIn" />
+            <End Role="DocumentAttachment" EntitySet="DocumentAttachment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentIn_Organization" Association="Self.FK_DocumentIn_Organization">
+            <End Role="Organization" EntitySet="Organization" />
+            <End Role="DocumentIn" EntitySet="DocumentIn" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentIn_Organization1" Association="Self.FK_DocumentIn_Organization1">
+            <End Role="Organization" EntitySet="Organization" />
+            <End Role="DocumentIn" EntitySet="DocumentIn" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentProcess_Document" Association="Self.FK_DocumentProcess_Document">
+            <End Role="Document" EntitySet="Document" />
+            <End Role="DocumentProcess" EntitySet="DocumentProcess" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentProcess_DocumentIn" Association="Self.FK_DocumentProcess_DocumentIn">
+            <End Role="DocumentIn" EntitySet="DocumentIn" />
+            <End Role="DocumentProcess" EntitySet="DocumentProcess" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentReference_Document" Association="Self.FK_DocumentReference_Document">
+            <End Role="Document" EntitySet="Document" />
+            <End Role="DocumentReference" EntitySet="DocumentReference" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentReference_DocumentIn" Association="Self.FK_DocumentReference_DocumentIn">
+            <End Role="DocumentIn" EntitySet="DocumentIn" />
+            <End Role="DocumentReference" EntitySet="DocumentReference" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Organization" Association="Self.FK_User_Organization">
+            <End Role="Organization" EntitySet="Organization" />
+            <End Role="User" EntitySet="User" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DGAMilDocModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="DocumentAttachment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocumentId" Type="Int32" />
+          <Property Name="AttachmentName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AttachmentBinary" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="State" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentInId" Type="Int32" />
+          <Property Name="Type" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="MimeCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Document" Relationship="DGAMilDocModel.FK_DocumentAttachment_Document" FromRole="DocumentAttachment" ToRole="Document" />
+          <NavigationProperty Name="DocumentIn" Relationship="DGAMilDocModel.FK_DocumentAttachment_DocumentIn" FromRole="DocumentAttachment" ToRole="DocumentIn" />
+        </EntityType>
+        <EntityType Name="DocumentReference">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocumentId" Type="Int32" />
+          <Property Name="ReferenceBookNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ReferenceBookDate" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ReferenceBookSubject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="State" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentInId" Type="Int32" />
+          <Property Name="Type" Type="Int32" />
+          <NavigationProperty Name="Document" Relationship="DGAMilDocModel.FK_DocumentReference_Document" FromRole="DocumentReference" ToRole="Document" />
+          <NavigationProperty Name="DocumentIn" Relationship="DGAMilDocModel.FK_DocumentReference_DocumentIn" FromRole="DocumentReference" ToRole="DocumentIn" />
+        </EntityType>
+        <EntityContainer Name="DGAMilDocEntities" annotation:LazyLoadingEnabled="false">
+          <EntitySet Name="DocumentAttachment" EntityType="Self.DocumentAttachment" />
+          <EntitySet Name="DocumentReference" EntityType="Self.DocumentReference" />
+          <EntitySet Name="Organization" EntityType="DGAMilDocModel.Organization" />
+          <EntitySet Name="Document" EntityType="DGAMilDocModel.Document" />
+          <AssociationSet Name="FK_Document_Organization" Association="DGAMilDocModel.FK_Document_Organization">
+            <End Role="Organization" EntitySet="Organization" />
+            <End Role="Document" EntitySet="Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_Organization1" Association="DGAMilDocModel.FK_Document_Organization1">
+            <End Role="Organization" EntitySet="Organization" />
+            <End Role="Document" EntitySet="Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentAttachment_Document" Association="DGAMilDocModel.FK_DocumentAttachment_Document">
+            <End Role="Document" EntitySet="Document" />
+            <End Role="DocumentAttachment" EntitySet="DocumentAttachment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentReference_Document" Association="DGAMilDocModel.FK_DocumentReference_Document">
+            <End Role="Document" EntitySet="Document" />
+            <End Role="DocumentReference" EntitySet="DocumentReference" />
+          </AssociationSet>
+          <EntitySet Name="DocumentIn" EntityType="DGAMilDocModel.DocumentIn" />
+          <AssociationSet Name="FK_DocumentAttachment_DocumentIn" Association="DGAMilDocModel.FK_DocumentAttachment_DocumentIn">
+            <End Role="DocumentIn" EntitySet="DocumentIn" />
+            <End Role="DocumentAttachment" EntitySet="DocumentAttachment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentIn_Organization" Association="DGAMilDocModel.FK_DocumentIn_Organization">
+            <End Role="Organization" EntitySet="Organization" />
+            <End Role="DocumentIn" EntitySet="DocumentIn" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentIn_Organization1" Association="DGAMilDocModel.FK_DocumentIn_Organization1">
+            <End Role="Organization" EntitySet="Organization" />
+            <End Role="DocumentIn" EntitySet="DocumentIn" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentReference_DocumentIn" Association="DGAMilDocModel.FK_DocumentReference_DocumentIn">
+            <End Role="DocumentIn" EntitySet="DocumentIn" />
+            <End Role="DocumentReference" EntitySet="DocumentReference" />
+          </AssociationSet>
+          <EntitySet Name="DocumentProcess" EntityType="DGAMilDocModel.DocumentProcess" />
+          <EntitySet Name="User" EntityType="DGAMilDocModel.User" />
+          <AssociationSet Name="FK_DocumentProcess_Document" Association="DGAMilDocModel.FK_DocumentProcess_Document">
+            <End Role="Document" EntitySet="Document" />
+            <End Role="DocumentProcess" EntitySet="DocumentProcess" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Organization" Association="DGAMilDocModel.FK_User_Organization">
+            <End Role="Organization" EntitySet="Organization" />
+            <End Role="User" EntitySet="User" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentProcess_DocumentIn" Association="DGAMilDocModel.FK_DocumentProcess_DocumentIn">
+            <End Role="DocumentIn" EntitySet="DocumentIn" />
+            <End Role="DocumentProcess" EntitySet="DocumentProcess" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="Organization">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Code" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Url" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Document" Relationship="DGAMilDocModel.FK_Document_Organization" FromRole="Organization" ToRole="Document" />
+          <NavigationProperty Name="Document1" Relationship="DGAMilDocModel.FK_Document_Organization1" FromRole="Organization" ToRole="Document" />
+          <NavigationProperty Name="DocumentIn" Relationship="DGAMilDocModel.FK_DocumentIn_Organization" FromRole="Organization" ToRole="DocumentIn" />
+          <NavigationProperty Name="DocumentIn1" Relationship="DGAMilDocModel.FK_DocumentIn_Organization1" FromRole="Organization" ToRole="DocumentIn" />
+          <NavigationProperty Name="User" Relationship="DGAMilDocModel.FK_User_Organization" FromRole="Organization" ToRole="User" />
+          </EntityType>
+        <EntityType Name="Document">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BookId" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProcessId" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="No" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="From" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Date" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Speed" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Secret" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MainAttachmentName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MainAttachmentBinary" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="MimeCode" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SenderPosition" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SenderName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SenderSurname" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SenderOrganizationId" Type="Int32" Nullable="false" />
+          <Property Name="ReceiverName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ReceiverSurname" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ReceiverPosition" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ReceiverOrganizationId" Type="Int32" Nullable="false" />
+          <Property Name="AttachmentDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="0" />
+          <Property Name="Status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AcceptId" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Organization" Relationship="DGAMilDocModel.FK_Document_Organization" FromRole="Document" ToRole="Organization" />
+          <NavigationProperty Name="Organization1" Relationship="DGAMilDocModel.FK_Document_Organization1" FromRole="Document" ToRole="Organization" />
+          <NavigationProperty Name="DocumentAttachment" Relationship="DGAMilDocModel.FK_DocumentAttachment_Document" FromRole="Document" ToRole="DocumentAttachment" />
+          <NavigationProperty Name="DocumentReference" Relationship="DGAMilDocModel.FK_DocumentReference_Document" FromRole="Document" ToRole="DocumentReference" />
+          <NavigationProperty Name="DocumentProcess" Relationship="DGAMilDocModel.FK_DocumentProcess_Document" FromRole="Document" ToRole="DocumentProcess" />
+        </EntityType>
+        <Association Name="FK_Document_Organization">
+          <End Type="DGAMilDocModel.Organization" Role="Organization" Multiplicity="1" />
+          <End Type="DGAMilDocModel.Document" Role="Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organization">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Document">
+              <PropertyRef Name="SenderOrganizationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_Organization1">
+          <End Type="DGAMilDocModel.Organization" Role="Organization" Multiplicity="1" />
+          <End Type="DGAMilDocModel.Document" Role="Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organization">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Document">
+              <PropertyRef Name="ReceiverOrganizationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentAttachment_Document">
+          <End Type="DGAMilDocModel.Document" Role="Document" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="DGAMilDocModel.DocumentAttachment" Role="DocumentAttachment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Document">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DocumentAttachment">
+              <PropertyRef Name="DocumentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentReference_Document">
+          <End Type="DGAMilDocModel.Document" Role="Document" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="DGAMilDocModel.DocumentReference" Role="DocumentReference" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Document">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DocumentReference">
+              <PropertyRef Name="DocumentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="DocumentIn">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BookId" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProcessId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="No" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="From" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Date" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Speed" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Secret" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MainAttachmentName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MainAttachmentBinary" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="MimeCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SenderPosition" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SenderName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SenderSurname" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SenderOrganizationId" Type="Int32" Nullable="false" />
+          <Property Name="ReceiverName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ReceiverSurname" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ReceiverPosition" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ReceiverOrganizationId" Type="Int32" Nullable="false" />
+          <Property Name="AttachmentDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="0" />
+          <Property Name="SendDate" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="DocumentAttachment" Relationship="DGAMilDocModel.FK_DocumentAttachment_DocumentIn" FromRole="DocumentIn" ToRole="DocumentAttachment" />
+          <NavigationProperty Name="Organization" Relationship="DGAMilDocModel.FK_DocumentIn_Organization" FromRole="DocumentIn" ToRole="Organization" />
+          <NavigationProperty Name="Organization1" Relationship="DGAMilDocModel.FK_DocumentIn_Organization1" FromRole="DocumentIn" ToRole="Organization" />
+          <NavigationProperty Name="DocumentReference" Relationship="DGAMilDocModel.FK_DocumentReference_DocumentIn" FromRole="DocumentIn" ToRole="DocumentReference" />
+          <Property Name="AcceptId" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="DocumentProcess" Relationship="DGAMilDocModel.FK_DocumentProcess_DocumentIn" FromRole="DocumentIn" ToRole="DocumentProcess" />
+        </EntityType>
+        <Association Name="FK_DocumentAttachment_DocumentIn">
+          <End Type="DGAMilDocModel.DocumentIn" Role="DocumentIn" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="DGAMilDocModel.DocumentAttachment" Role="DocumentAttachment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DocumentIn">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DocumentAttachment">
+              <PropertyRef Name="DocumentInId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentIn_Organization">
+          <End Type="DGAMilDocModel.Organization" Role="Organization" Multiplicity="1" />
+          <End Type="DGAMilDocModel.DocumentIn" Role="DocumentIn" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organization">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DocumentIn">
+              <PropertyRef Name="SenderOrganizationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentIn_Organization1">
+          <End Type="DGAMilDocModel.Organization" Role="Organization" Multiplicity="1" />
+          <End Type="DGAMilDocModel.DocumentIn" Role="DocumentIn" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organization">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DocumentIn">
+              <PropertyRef Name="ReceiverOrganizationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentReference_DocumentIn">
+          <End Type="DGAMilDocModel.DocumentIn" Role="DocumentIn" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="DGAMilDocModel.DocumentReference" Role="DocumentReference" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DocumentIn">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DocumentReference">
+              <PropertyRef Name="DocumentInId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="DocumentProcess">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocumentId" Type="Int32" />
+          <Property Name="ProcessId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Document" Relationship="DGAMilDocModel.FK_DocumentProcess_Document" FromRole="DocumentProcess" ToRole="Document" />
+          <Property Name="DocumentInId" Type="Int32" />
+          <NavigationProperty Name="DocumentIn" Relationship="DGAMilDocModel.FK_DocumentProcess_DocumentIn" FromRole="DocumentProcess" ToRole="DocumentIn" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Token" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Expire" Type="DateTime" Precision="0" />
+          <Property Name="OrganizationId" Type="Int32" />
+          <NavigationProperty Name="Organization" Relationship="DGAMilDocModel.FK_User_Organization" FromRole="User" ToRole="Organization" />
+        </EntityType>
+        <Association Name="FK_DocumentProcess_Document">
+          <End Type="DGAMilDocModel.Document" Role="Document" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="DGAMilDocModel.DocumentProcess" Role="DocumentProcess" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Document">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DocumentProcess">
+              <PropertyRef Name="DocumentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Organization">
+          <End Type="DGAMilDocModel.Organization" Role="Organization" Multiplicity="0..1" />
+          <End Type="DGAMilDocModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organization">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="OrganizationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentProcess_DocumentIn">
+          <End Type="DGAMilDocModel.DocumentIn" Role="DocumentIn" Multiplicity="0..1" />
+          <End Type="DGAMilDocModel.DocumentProcess" Role="DocumentProcess" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DocumentIn">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DocumentProcess">
+              <PropertyRef Name="DocumentInId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DGAMilDocModelStoreContainer" CdmEntityContainer="DGAMilDocEntities">
+          <EntitySetMapping Name="DocumentAttachment">
+            <EntityTypeMapping TypeName="DGAMilDocModel.DocumentAttachment">
+              <MappingFragment StoreEntitySet="DocumentAttachment">
+                <ScalarProperty Name="MimeCode" ColumnName="MimeCode" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="DocumentInId" ColumnName="DocumentInId" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DocumentId" ColumnName="DocumentId" />
+                <ScalarProperty Name="AttachmentName" ColumnName="AttachmentName" />
+                <ScalarProperty Name="AttachmentBinary" ColumnName="AttachmentBinary" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DocumentReference">
+            <EntityTypeMapping TypeName="DGAMilDocModel.DocumentReference">
+              <MappingFragment StoreEntitySet="DocumentReference">
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="DocumentInId" ColumnName="DocumentInId" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DocumentId" ColumnName="DocumentId" />
+                <ScalarProperty Name="ReferenceBookNo" ColumnName="ReferenceBookNo" />
+                <ScalarProperty Name="ReferenceBookDate" ColumnName="ReferenceBookDate" />
+                <ScalarProperty Name="ReferenceBookSubject" ColumnName="ReferenceBookSubject" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Organization">
+            <EntityTypeMapping TypeName="DGAMilDocModel.Organization">
+              <MappingFragment StoreEntitySet="Organization">
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Document">
+            <EntityTypeMapping TypeName="DGAMilDocModel.Document">
+              <MappingFragment StoreEntitySet="Document">
+                <ScalarProperty Name="AcceptId" ColumnName="AcceptId" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="AttachmentDescription" ColumnName="AttachmentDescription" />
+                <ScalarProperty Name="ReceiverOrganizationId" ColumnName="ReceiverOrganizationId" />
+                <ScalarProperty Name="ReceiverPosition" ColumnName="ReceiverPosition" />
+                <ScalarProperty Name="ReceiverSurname" ColumnName="ReceiverSurname" />
+                <ScalarProperty Name="ReceiverName" ColumnName="ReceiverName" />
+                <ScalarProperty Name="SenderOrganizationId" ColumnName="SenderOrganizationId" />
+                <ScalarProperty Name="SenderSurname" ColumnName="SenderSurname" />
+                <ScalarProperty Name="SenderName" ColumnName="SenderName" />
+                <ScalarProperty Name="SenderPosition" ColumnName="SenderPosition" />
+                <ScalarProperty Name="MimeCode" ColumnName="MimeCode" />
+                <ScalarProperty Name="MainAttachmentBinary" ColumnName="MainAttachmentBinary" />
+                <ScalarProperty Name="MainAttachmentName" ColumnName="MainAttachmentName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Secret" ColumnName="Secret" />
+                <ScalarProperty Name="Speed" ColumnName="Speed" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="From" ColumnName="From" />
+                <ScalarProperty Name="No" ColumnName="No" />
+                <ScalarProperty Name="ProcessId" ColumnName="ProcessId" />
+                <ScalarProperty Name="BookId" ColumnName="BookId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DocumentIn">
+            <EntityTypeMapping TypeName="DGAMilDocModel.DocumentIn">
+              <MappingFragment StoreEntitySet="DocumentIn">
+                <ScalarProperty Name="AcceptId" ColumnName="AcceptId" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="SendDate" ColumnName="SendDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="AttachmentDescription" ColumnName="AttachmentDescription" />
+                <ScalarProperty Name="ReceiverOrganizationId" ColumnName="ReceiverOrganizationId" />
+                <ScalarProperty Name="ReceiverPosition" ColumnName="ReceiverPosition" />
+                <ScalarProperty Name="ReceiverSurname" ColumnName="ReceiverSurname" />
+                <ScalarProperty Name="ReceiverName" ColumnName="ReceiverName" />
+                <ScalarProperty Name="SenderOrganizationId" ColumnName="SenderOrganizationId" />
+                <ScalarProperty Name="SenderSurname" ColumnName="SenderSurname" />
+                <ScalarProperty Name="SenderName" ColumnName="SenderName" />
+                <ScalarProperty Name="SenderPosition" ColumnName="SenderPosition" />
+                <ScalarProperty Name="MimeCode" ColumnName="MimeCode" />
+                <ScalarProperty Name="MainAttachmentBinary" ColumnName="MainAttachmentBinary" />
+                <ScalarProperty Name="MainAttachmentName" ColumnName="MainAttachmentName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Secret" ColumnName="Secret" />
+                <ScalarProperty Name="Speed" ColumnName="Speed" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="From" ColumnName="From" />
+                <ScalarProperty Name="No" ColumnName="No" />
+                <ScalarProperty Name="ProcessId" ColumnName="ProcessId" />
+                <ScalarProperty Name="BookId" ColumnName="BookId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DocumentProcess">
+            <EntityTypeMapping TypeName="DGAMilDocModel.DocumentProcess">
+              <MappingFragment StoreEntitySet="DocumentProcess">
+                <ScalarProperty Name="DocumentInId" ColumnName="DocumentInId" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ProcessId" ColumnName="ProcessId" />
+                <ScalarProperty Name="DocumentId" ColumnName="DocumentId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="User">
+            <EntityTypeMapping TypeName="DGAMilDocModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="OrganizationId" ColumnName="OrganizationId" />
+                <ScalarProperty Name="Expire" ColumnName="Expire" />
+                <ScalarProperty Name="Token" ColumnName="Token" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
