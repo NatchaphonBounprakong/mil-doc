@@ -20,7 +20,7 @@ using HttpPostAttribute = System.Web.Mvc.HttpPostAttribute;
 
 namespace WEB.API.DGA.MIL.DOC.Controllers
 {
-    
+
     public class APIController : Controller
     {
         public RequestErrorResponse errorResponse = null;
@@ -1009,7 +1009,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
 
             return Content(response, "application/xml");
         }
-        
+
         public ActionResult RequestAcceptLetterNotifier2()
         {
 
@@ -1031,61 +1031,6 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             return Content(response, "application/xml");
         }
 
-        public ActionResult RequestOrganizationList()
-        {
-            RequestReceive source = new RequestReceive()
-            {
-                MessageID = "Test",
-                To = "http://dev.scp2.ecms.dga.or.th/ecms-ws01/service2"
-            };
-            var xml = XMLCreation.RequestGetOrganizationList(source);
-            var response = postXMLData(source.To, xml);
-        
-           
-            return Content(response, "application/xml");
-        }
-
-        public ActionResult RequestSecretList()
-        {
-            RequestReceive source = new RequestReceive()
-            {
-                MessageID = "Test",
-                To = "http://dev.scp2.ecms.dga.or.th/ecms-ws01/service2"
-            };
-            var xml = XMLCreation.RequestGetSecretCodes(source);
-            var response = postXMLData(source.To, xml);
-
-
-            return Content(response, "application/xml");
-        }
-
-        public ActionResult RequestSpeedList()
-        {
-            RequestReceive source = new RequestReceive()
-            {
-                MessageID = "Test",
-                To = "http://dev.scp2.ecms.dga.or.th/ecms-ws01/service2"
-            };
-            var xml = XMLCreation.RequestGetSpeedCodes(source);
-            var response = postXMLData(source.To, xml);
-
-
-            return Content(response, "application/xml");
-        }
-
-        public ActionResult RequestMinistryList()
-        {
-            RequestReceive source = new RequestReceive()
-            {
-                MessageID = "Test",
-                To = "http://dev.scp2.ecms.dga.or.th/ecms-ws01/service2"
-            };
-            var xml = XMLCreation.RequestGetMinistry(source);
-            var response = postXMLData(source.To, xml);
-
-
-            return Content(response, "application/xml");
-        }
 
         public RequestSendDocOut GetTestBook()
         {
@@ -1138,7 +1083,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
 
             return obj;
         }
-        
+
         public bool IsResponseSuccess(XmlDocument doc)
         {
             var error = doc.GetElementsByTagName("ErrorDetail");
@@ -1259,11 +1204,11 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                 return null;
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
-            
+
         }
 
         //ส่งหนังสือ
@@ -1276,7 +1221,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             {
 
                 var docResponse = docService.GetdocumentWithAtt(id);
-                
+
                 if (docResponse.Status)
                 {
                     var processID = string.Empty;
@@ -1284,7 +1229,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                     byte[] pdfBytes = document.MainAttachmentBinary;
                     string pdfBase64 = Convert.ToBase64String(pdfBytes);
                     var receive = docService.GetOrganizationById(document.ReceiverOrganizationId).ResponseObject;
-                    
+
                     RequestSendDocOut source = new RequestSendDocOut()
                     {
                         MessageID = document.Id.ToString(),
@@ -1297,7 +1242,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                         SenderGivenName = document.SenderName,
                         SenderFamilyName = document.SenderSurname,
                         SenderDeptID = document.Organization.Code,
-                        SenderMinistryID = document.Organization.Code.Substring(0,2),
+                        SenderMinistryID = document.Organization.Code.Substring(0, 2),
                         SenderJobTitle = document.SenderPosition,
                         ReceiverGivenName = document.ReceiverName,
                         ReceiverFamilyName = document.ReceiverSurname,
@@ -1311,22 +1256,30 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                         MainLetterBinaryObject = pdfBase64,
                         References = new List<Reference>(),
                         Attachments = new List<Attachment>(),
-                                                
+
                     };
-
-                    foreach (var refer in document.DocumentReference)
+                    if (document.DocumentReference.Count == 0)
                     {
-                        Reference reference = new Reference()
-                        {
-                            ID = refer.ReferenceBookNo,
-                            CorrespondenceDate = refer.ReferenceBookDate,
-                            Subject = refer.ReferenceBookSubject,
-                        };
-
+                        Reference reference = new Reference();
                         source.References.Add(reference);
                     }
+                    else
+                    {
+                        foreach (var refer in document.DocumentReference)
+                        {
+                            Reference reference = new Reference()
+                            {
+                                ID = refer.ReferenceBookNo,
+                                CorrespondenceDate = refer.ReferenceBookDate,
+                                Subject = refer.ReferenceBookSubject,
+                            };
 
-                    if(document.DocumentAttachment.Count == 0)
+                            source.References.Add(reference);
+                        }
+                    }
+
+
+                    if (document.DocumentAttachment.Count == 0)
                     {
                         Attachment attachment = new Attachment();
                         source.Attachments.Add(attachment);
@@ -1344,14 +1297,14 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             source.Attachments.Add(attachment);
                         }
                     }
-                    
+
 
                     var xml = XMLCreation.RequestSendDocument(source);
                     postResponse = postXMLData(document.Organization.Url, xml);
-                    
+
                     XmlDocument xmlDoc = new XmlDocument();
                     xmlDoc.LoadXml(postResponse);
-                                      
+
                     var error = xmlDoc.GetElementsByTagName("ErrorDetail");
 
                     if (error.Count > 0)
@@ -1376,8 +1329,8 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                         {
                             processID = pID[0].InnerXml.ToString();
                         }
-                       
-                        resp = docService.UpdateDocumentStatus(id, processID, "ส่งหนังสือรอตอบรับ");                       
+
+                        resp = docService.UpdateDocumentStatus(id, processID, "ส่งหนังสือรอตอบรับ");
                         resp.ResponseObject = null;
                     }
                 }
@@ -1389,7 +1342,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             }
             return Json(resp, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet);
         }
-        
+
         //รับหนังสือส่ง
         [HttpPost]
         public ActionResult RequestReceiveDocument(string to, string messageID)
@@ -1430,7 +1383,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                 var sj = xmlDoc.GetElementsByTagName("Subject");
                 var acceptId = xmlDoc.GetElementsByTagName("AcceptID");
                 var governmentDoc = xmlDoc.GetElementsByTagName("rsm:GovernmentDocument");
-                
+
                 if (invalid.Count > 0)
                 {
                     Document document = new Document()
@@ -1441,7 +1394,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                         Date = cDate[0].InnerXml.ToString(),
                         Subject = sj[0].InnerXml.ToString()
                     };
-                   
+
                     var resp = docService.UpdateDocumentInvalidAcceptId(document);
 
                     if (resp.Status && resp.ResponseObject != 0)
@@ -1458,7 +1411,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
 
                     }
                 }
-                else if(governmentDoc.Count > 0)
+                else if (governmentDoc.Count > 0)
                 {
                     DocumentIn docIn = new DocumentIn();
 
@@ -1500,7 +1453,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                                        .Replace("&amp;", "&")
                                                        .Replace("&gt;", ">"); ;
                     }
-            
+
                     var familyName = xmlDoc.GetElementsByTagName("ram:FamilyName");
                     if (familyName.Count > 0)
                     {
@@ -1511,7 +1464,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                                        .Replace("&amp;", "&")
                                                        .Replace("&gt;", ">"); ;
                     }
-           
+
                     var jobTitle = xmlDoc.GetElementsByTagName("ram:JobTitle");
                     if (jobTitle.Count > 0)
                     {
@@ -1522,7 +1475,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                                        .Replace("&amp;", "&")
                                                        .Replace("&gt;", ">"); ;
                     }
-                 
+
                     var department = xmlDoc.GetElementsByTagName("ram:DepartmentOrganization");
                     if (department.Count > 0)
                     {
@@ -1550,7 +1503,15 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                                        .Replace("&gt;", ">"),
                             };
 
-                            docIn.DocumentReference.Add(refer);
+                            if(refer.ReferenceBookNo == "" && refer.ReferenceBookDate == "" && refer.ReferenceBookSubject == "")
+                            {
+
+                            }
+                            else
+                            {
+                                docIn.DocumentReference.Add(refer);
+                            }
+                            
                         }
                     }
 
@@ -1573,6 +1534,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                         byte[] bytes = System.Convert.FromBase64String(mainAttachment[0].InnerXml.Trim());
                         docIn.MainAttachmentBinary = bytes;
                         docIn.MainAttachmentName = "เอกสารหลัก" + ConvertExtensionType(mainAttachment[0].Attributes[0].InnerText);
+                        docIn.FileSize = ConvertBytesToMegabytes(bytes.Length).ToString("N5") + " mb";
                     }
 
                     var attachmentBinaryObject = xmlDoc.GetElementsByTagName("ram:AttachmentBinaryObject");
@@ -1589,9 +1551,17 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                 Type = "2",
                                 MimeCode = attachmentBinaryObject[i].Attributes[0].InnerText,
                                 AttachmentName = "เอกสารแนบ" + (i + 1) + "" + ConvertExtensionType(attachmentBinaryObject[i].Attributes[0].InnerText),
+                                FileSize = ConvertBytesToMegabytes(System.Convert.FromBase64String(attachmentBinaryObject[i].InnerXml.Trim()).Length).ToString("N5") + " mb"
                             };
+                            if(att.AttachmentBinary.Length == 0)
+                            {
 
-                            docIn.DocumentAttachment.Add(att);
+                            }
+                            else
+                            {
+                                docIn.DocumentAttachment.Add(att);
+                            }
+                            
                         }
 
                     }
@@ -1617,7 +1587,12 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
 
             return Content("");
         }
-        
+
+        static double ConvertBytesToMegabytes(long bytes)
+        {
+            return (bytes / 1024f) / 1024f;
+        }
+
         //ส่งหนังสือตอบรับ
         [HttpPost]
         public JsonResult RequestSendNotifierDocument(int id)
@@ -1674,15 +1649,15 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                 }
                 resp.ResponseObject = null;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 resp.Status = false;
                 resp.Description = ex.Message;
             }
-           
+
             return Json(resp, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet);
         }
-        
+
         //ส่งหนังสือแจ้งเลขรับ
         [HttpPost]
         public JsonResult RequestSendNumberDocument(int id, string acceptId)
@@ -1691,7 +1666,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             var resp = new Response();
             try
             {
-                resp = docService.GetDocumentInWithAtt(id); 
+                resp = docService.GetDocumentInWithAtt(id);
                 if (resp.Status)
                 {
 
@@ -1741,9 +1716,9 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
 
                     }
                 }
-               
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 resp.Status = false;
                 resp.Description = ex.Message;
@@ -1751,7 +1726,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             resp.ResponseObject = null;
             return Json(resp, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet);
         }
-        
+
         //ส่งปฏิเสธหนังสือ
         [HttpPost]
         public JsonResult RequestRejectLetterNotifier(int id)
@@ -1805,7 +1780,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
 
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 resp.Status = false;
                 resp.Description = ex.Message;
@@ -1813,7 +1788,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             resp.ResponseObject = null;
             return Json(resp, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet);
         }
-        
+
         //ส่งแจ้งหนังสือผิด
         [HttpPost]
         public JsonResult RequestInvalidLetterNotifier(int id)
@@ -1864,7 +1839,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 resp.Status = false;
                 resp.Description = ex.Message;
@@ -1872,7 +1847,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             resp.ResponseObject = null;
             return Json(resp, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet);
         }
-        
+
         //ส่งแจ้งเลขหนังสือผิด
         [HttpPost]
         public JsonResult RequestInvalidAcceptIDNotifier(int id)
@@ -1932,18 +1907,18 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                 }
                 resp.ResponseObject = null;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 resp.Description = ex.Message;
                 resp.Status = false;
             }
-         
+
             return Json(resp, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet);
 
 
 
         }
-        
+
         //รับหนังสือตอบรับ/ลบ/แจ้งเลข
         [HttpPost]
         public JsonResult RequestReceiveNotifierDocument(string to, string messageID)
@@ -2197,15 +2172,15 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                 }
                 resp.ResponseObject = null;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 resp.Status = false;
                 resp.Description = ex.Message;
             }
-            
+
             return Json(resp, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet);
         }
-        
+
         //ลบหนังสือออกจากคิว
         [HttpPost]
         public JsonResult RequestDeleteDocumentQueue(int id)
@@ -2230,15 +2205,15 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                 }
                 resp.ResponseObject = null;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 resp.Status = false;
                 resp.Description = ex.Message;
             }
-         
+
             return Json(resp, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet);
         }
-        
+
         //ดาวโหลดไฟล์แนบ
         [HttpPost]
         public JsonResult DownloadOtherFile(int id)
@@ -2250,7 +2225,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             return Json(resp, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet);
 
         }
-        
+
         //ดาวโหลดไฟล์หลัก
         [HttpPost]
         public JsonResult DownloadMainFile(int id)
@@ -2378,6 +2353,65 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                 JsonRequestBehavior = behavior,
                 MaxJsonLength = Int32.MaxValue
             };
+        }
+
+
+
+
+        public ActionResult RequestOrganizationList()
+        {
+            RequestReceive source = new RequestReceive()
+            {
+                MessageID = "Test",
+                To = "http://dev.scp2.ecms.dga.or.th/ecms-ws01/service2"
+            };
+            var xml = XMLCreation.RequestGetOrganizationList(source);
+            var response = postXMLData(source.To, xml);
+
+
+            return Content(response, "application/xml");
+        }
+
+        public ActionResult RequestSecretList()
+        {
+            RequestReceive source = new RequestReceive()
+            {
+                MessageID = "Test",
+                To = "http://dev.scp2.ecms.dga.or.th/ecms-ws01/service2"
+            };
+            var xml = XMLCreation.RequestGetSecretCodes(source);
+            var response = postXMLData(source.To, xml);
+
+
+            return Content(response, "application/xml");
+        }
+
+        public ActionResult RequestSpeedList()
+        {
+            RequestReceive source = new RequestReceive()
+            {
+                MessageID = "Test",
+                To = "http://dev.scp2.ecms.dga.or.th/ecms-ws01/service2"
+            };
+            var xml = XMLCreation.RequestGetSpeedCodes(source);
+            var response = postXMLData(source.To, xml);
+
+
+            return Content(response, "application/xml");
+        }
+
+        public ActionResult RequestMinistryList()
+        {
+            RequestReceive source = new RequestReceive()
+            {
+                MessageID = "Test",
+                To = "http://dev.scp2.ecms.dga.or.th/ecms-ws01/service2"
+            };
+            var xml = XMLCreation.RequestGetMinistry(source);
+            var response = postXMLData(source.To, xml);
+
+
+            return Content(response, "application/xml");
         }
     }
 

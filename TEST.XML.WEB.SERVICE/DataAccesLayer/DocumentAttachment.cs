@@ -22,6 +22,7 @@ namespace WEB.API.DGA.MIL.DOC.DataAccesLayer
         public Nullable<int> DocumentInId { get; set; }
         public string Type { get; set; }
         public string MimeCode { get; set; }
+        public string FileSize { get; set; }
     
         public virtual Document Document { get; set; }
         public virtual DocumentIn DocumentIn { get; set; }

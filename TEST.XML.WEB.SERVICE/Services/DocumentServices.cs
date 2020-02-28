@@ -797,8 +797,9 @@ namespace WEB.API.DGA.MIL.DOC.Services
                             AttachmentBinary = files[i],
                             MimeCode = ConvertContentType(System.IO.Path.GetExtension(file)),
                             State = "บันทึก",
-                            Type = "1"
-                        };
+                            Type = "1",
+                            FileSize = ConvertBytesToMegabytes(files[i].Length).ToString("N5") + " mb",
+                    };
                         ctx.DocumentAttachment.Add(att);
                         i++;
                     }
@@ -985,6 +986,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         foreach (var attach in doc.DocumentAttachment)
                         {
                             attach.AttachmentBinary = files[i];
+                            attach.FileSize = ConvertBytesToMegabytes(files[i].Length).ToString("N5") + " mb";
                             attach.State = "บันทึก";
                             attach.Type = "1";
                             i++;
@@ -1002,6 +1004,11 @@ namespace WEB.API.DGA.MIL.DOC.Services
             }
 
             return resp;
+        }
+
+        static double ConvertBytesToMegabytes(long bytes)
+        {
+            return (bytes / 1024f) / 1024f;
         }
 
         public Response DeleteDocumentAttachment(int id)
@@ -1063,6 +1070,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                     {
 
                         doc.MainAttachmentBinary = file;
+                        doc.FileSize = ConvertBytesToMegabytes(file.Length).ToString("N5") + " mb";
 
                         ctx.SaveChanges();
                         resp.Status = true;

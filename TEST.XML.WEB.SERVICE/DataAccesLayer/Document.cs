@@ -48,6 +48,7 @@ namespace WEB.API.DGA.MIL.DOC.DataAccesLayer
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public string Status { get; set; }
         public string AcceptId { get; set; }
+        public string FileSize { get; set; }
     
         public virtual Organization Organization { get; set; }
         public virtual Organization Organization1 { get; set; }

@@ -49,6 +49,7 @@ namespace WEB.API.DGA.MIL.DOC.DataAccesLayer
         public string SendDate { get; set; }
         public string Status { get; set; }
         public string AcceptId { get; set; }
+        public string FileSize { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DocumentAttachment> DocumentAttachment { get; set; }
