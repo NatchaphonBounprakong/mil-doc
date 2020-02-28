@@ -336,6 +336,22 @@ namespace WEB.API.DGA.MIL.DOC.Utility
 
             return ConvertXmlFormat(soapElement);
         }
+        //การขอรหัสประเภทไฟล์
+        public static string RequestGetMimeCodes(RequestReceive source)
+        {
+            XNamespace soap = "http://schemas.xmlsoap.org/soap/envelope/";
+            XNamespace wsa = "http://www.w3.org/2005/08/addressing";
+
+
+            XElement soapElement = new XElement(soap + "Envelope", new XAttribute(XNamespace.Xmlns + "SOAP-ENV", soap),
+                new XElement(soap + "Header",
+                    new XElement(wsa + "MessageID", source.MessageID ?? "", new XAttribute(XNamespace.Xmlns + "wsa", wsa)),
+                    new XElement(wsa + "To", source.To ?? "http://dev.scp1.ecms.dga.or.th/ecms-ws01/service2", new XAttribute(XNamespace.Xmlns + "wsa", wsa))),
+                new XElement(soap + "Body",
+                    new XElement("GetMimeCodes")));
+
+            return ConvertXmlFormat(soapElement);
+        }
         //การสอบถามสถานะส่งหนังสือ
         public static string RequestGetStatus(RequestReceive source)
         {

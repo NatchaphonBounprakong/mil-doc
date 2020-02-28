@@ -1503,7 +1503,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                                        .Replace("&gt;", ">"),
                             };
 
-                            if(refer.ReferenceBookNo == "" && refer.ReferenceBookDate == "" && refer.ReferenceBookSubject == "")
+                            if (refer.ReferenceBookNo == "" && refer.ReferenceBookDate == "" && refer.ReferenceBookSubject == "")
                             {
 
                             }
@@ -1511,7 +1511,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             {
                                 docIn.DocumentReference.Add(refer);
                             }
-                            
+
                         }
                     }
 
@@ -1553,7 +1553,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                 AttachmentName = "เอกสารแนบ" + (i + 1) + "" + ConvertExtensionType(attachmentBinaryObject[i].Attributes[0].InnerText),
                                 FileSize = ConvertBytesToMegabytes(System.Convert.FromBase64String(attachmentBinaryObject[i].InnerXml.Trim()).Length).ToString("N5") + " mb"
                             };
-                            if(att.AttachmentBinary.Length == 0)
+                            if (att.AttachmentBinary.Length == 0)
                             {
 
                             }
@@ -1561,7 +1561,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             {
                                 docIn.DocumentAttachment.Add(att);
                             }
-                            
+
                         }
 
                     }
@@ -2358,68 +2358,424 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
 
 
 
-        public ActionResult RequestOrganizationList()
+        #region ============== Sevice ==============
+        public JsonResult RequestMinistryList(int organizationId)
+        {
+            var resp = docService.GetOrganizationById(organizationId);
+            if (resp.Status)
+            {
+                RequestReceive source = new RequestReceive()
+                {
+                    MessageID = "Test",
+                    To = resp.ResponseObject.Url
+                };
+                var xml = XMLCreation.RequestGetMinistry(source);
+                var response = postXMLData(source.To, xml);
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(response);
+
+                var error = xmlDoc.GetElementsByTagName("ErrorDetail");
+
+                if (error.Count > 0)
+                {
+                    List<ErrorDetail> listError = new List<ErrorDetail>();
+                    for (int i = 0; i < error.Count; i++)
+                    {
+
+                        ErrorDetail errorDetail = new ErrorDetail()
+                        {
+                            ErrorCode = error[i].ChildNodes[0].InnerXml,
+                            ErrorDescription = error[i].ChildNodes[1].InnerXml,
+                        };
+
+                        listError.Add(errorDetail);
+
+                    }
+                    return Json(listError, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    var id = xmlDoc.GetElementsByTagName("MinistryID");
+                    var thName = xmlDoc.GetElementsByTagName("Th-Name");
+
+                    List<MinistryApi> list = new List<MinistryApi>();
+                    if (id.Count > 0)
+                    {
+
+                        for (int i = 0; i < id.Count; i++)
+                        {
+                            MinistryApi organization = new MinistryApi()
+                            {
+
+                                ThName = thName[i].InnerXml,
+                                Id = id[i].InnerXml,
+
+                            };
+
+                            list.Add(organization);
+                        }
+
+                    }
+                    return Json(list, JsonRequestBehavior.AllowGet);
+                }
+
+            }
+            else
+            {
+                return Json(resp, JsonRequestBehavior.AllowGet);
+            }
+
+
+        }
+
+        public JsonResult RequestOrganizationList(int organizationId)
+        {
+
+            var resp = docService.GetOrganizationById(organizationId);
+            if (resp.Status)
+            {
+                RequestReceive source = new RequestReceive()
+                {
+                    MessageID = "Test",
+                    To = resp.ResponseObject.Url
+                };
+                var xml = XMLCreation.RequestGetOrganizationList(source);
+                var response = postXMLData(source.To, xml);
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(response);
+
+                var error = xmlDoc.GetElementsByTagName("ErrorDetail");
+
+                if (error.Count > 0)
+                {
+                    List<ErrorDetail> listError = new List<ErrorDetail>();
+                    for (int i = 0; i < error.Count; i++)
+                    {
+
+                        ErrorDetail errorDetail = new ErrorDetail()
+                        {
+                            ErrorCode = error[i].ChildNodes[0].InnerXml,
+                            ErrorDescription = error[i].ChildNodes[1].InnerXml,
+                        };
+
+                        listError.Add(errorDetail);
+
+                    }
+                    return Json(listError, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    var enName = xmlDoc.GetElementsByTagName("En-Name");
+                    var thName = xmlDoc.GetElementsByTagName("Th-Name");
+                    var url = xmlDoc.GetElementsByTagName("ECMS-URL");
+                    var id = xmlDoc.GetElementsByTagName("OrganizationID");
+                    List<OrganizationApi> list = new List<OrganizationApi>();
+                    if (enName.Count > 0)
+                    {
+
+                        for (int i = 0; i < enName.Count; i++)
+                        {
+                            OrganizationApi organization = new OrganizationApi()
+                            {
+                                EnName = enName[i].InnerXml,
+                                ThName = thName[i].InnerXml,
+                                Id = id[i].InnerXml,
+                                Url = url[i].InnerXml
+                            };
+
+                            list.Add(organization);
+                        }
+
+                    }
+                    return Json(list, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+            {
+                return Json(resp, JsonRequestBehavior.AllowGet);
+            }
+
+
+        }
+
+        public JsonResult RequestFileList(int organizationId)
+        {
+            var resp = docService.GetOrganizationById(organizationId);
+            if (resp.Status)
+            {
+                RequestReceive source = new RequestReceive()
+                {
+                    MessageID = "Test",
+                    To = "http://dev.scp2.ecms.dga.or.th/ecms-ws01/service2"
+                };
+                var xml = XMLCreation.RequestGetMimeCodes(source);
+                var response = postXMLData(source.To, xml);
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(response);
+
+                var error = xmlDoc.GetElementsByTagName("ErrorDetail");
+
+                if (error.Count > 0)
+                {
+                    List<ErrorDetail> listError = new List<ErrorDetail>();
+                    for (int i = 0; i < error.Count; i++)
+                    {
+
+                        ErrorDetail errorDetail = new ErrorDetail()
+                        {
+                            ErrorCode = error[i].ChildNodes[0].InnerXml,
+                            ErrorDescription = error[i].ChildNodes[1].InnerXml,
+                        };
+
+                        listError.Add(errorDetail);
+
+                    }
+                    return Json(listError, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    var ext = xmlDoc.GetElementsByTagName("File-Extension");
+                    var content = xmlDoc.GetElementsByTagName("Content-type");
+
+                    List<FileApi> list = new List<FileApi>();
+                    if (ext.Count > 0)
+                    {
+
+                        for (int i = 0; i < ext.Count; i++)
+                        {
+                            FileApi organization = new FileApi()
+                            {
+
+                                FileExtension = ext[i].InnerXml,
+                                ContentType = content[i].InnerXml
+                            };
+
+                            list.Add(organization);
+                        }
+
+                    }
+                    return Json(list, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+            {
+                return Json(resp, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
+        public JsonResult RequestSecretList(int organizationId)
+        {
+            var resp = docService.GetOrganizationById(organizationId);
+            if (resp.Status)
+            {
+                RequestReceive source = new RequestReceive()
+                {
+                    MessageID = "Test",
+                    To = resp.ResponseObject.Url
+                };
+                var xml = XMLCreation.RequestGetSecretCodes(source);
+                var response = postXMLData(source.To, xml);
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(response);
+
+                var error = xmlDoc.GetElementsByTagName("ErrorDetail");
+
+                if (error.Count > 0)
+                {
+                    List<ErrorDetail> listError = new List<ErrorDetail>();
+                    for (int i = 0; i < error.Count; i++)
+                    {
+
+                        ErrorDetail errorDetail = new ErrorDetail()
+                        {
+                            ErrorCode = error[i].ChildNodes[0].InnerXml,
+                            ErrorDescription = error[i].ChildNodes[1].InnerXml,
+                        };
+
+                        listError.Add(errorDetail);
+
+                    }
+                    return Json(listError, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    var value = xmlDoc.GetElementsByTagName("Value");
+                    var description = xmlDoc.GetElementsByTagName("Description");
+
+                    List<SecretApi> list = new List<SecretApi>();
+                    if (value.Count > 0)
+                    {
+
+                        for (int i = 0; i < value.Count; i++)
+                        {
+                            SecretApi organization = new SecretApi()
+                            {
+
+                                value = value[i].InnerXml,
+                                description = description[i].InnerXml
+                            };
+
+                            list.Add(organization);
+                        }
+
+                    }
+                    return Json(list, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+            {
+                return Json(resp, JsonRequestBehavior.AllowGet);
+            }
+        
+        }
+
+        public JsonResult RequestSpeedList(int organizationId)
+        {
+            var resp = docService.GetOrganizationById(organizationId);
+            if (resp.Status)
+            {
+                RequestReceive source = new RequestReceive()
+                {
+                    MessageID = "Test",
+                    To = resp.ResponseObject.Url
+                };
+                var xml = XMLCreation.RequestGetSpeedCodes(source);
+                var response = postXMLData(source.To, xml);
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(response);
+
+                var error = xmlDoc.GetElementsByTagName("ErrorDetail");
+
+                if (error.Count > 0)
+                {
+                    List<ErrorDetail> listError = new List<ErrorDetail>();
+                    for (int i = 0; i < error.Count; i++)
+                    {
+
+                        ErrorDetail errorDetail = new ErrorDetail()
+                        {
+                            ErrorCode = error[i].ChildNodes[0].InnerXml,
+                            ErrorDescription = error[i].ChildNodes[1].InnerXml,
+                        };
+
+                        listError.Add(errorDetail);
+
+                    }
+                    return Json(listError, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    var value = xmlDoc.GetElementsByTagName("Value");
+                    var description = xmlDoc.GetElementsByTagName("Description");
+
+                    List<SpeedApi> list = new List<SpeedApi>();
+                    if (value.Count > 0)
+                    {
+
+                        for (int i = 0; i < value.Count; i++)
+                        {
+                            SpeedApi organization = new SpeedApi()
+                            {
+
+                                value = value[i].InnerXml,
+                                description = description[i].InnerXml
+                            };
+
+                            list.Add(organization);
+                        }
+
+                    }
+                    return Json(list, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+            {
+                return Json(resp, JsonRequestBehavior.AllowGet);
+            }
+          
+        }
+
+        public ActionResult RequestTimeCheck(int organizationId)
         {
             RequestReceive source = new RequestReceive()
             {
                 MessageID = "Test",
                 To = "http://dev.scp2.ecms.dga.or.th/ecms-ws01/service2"
             };
-            var xml = XMLCreation.RequestGetOrganizationList(source);
+            var xml = XMLCreation.RequestTimeCheck(source);
             var response = postXMLData(source.To, xml);
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(response);
+            var error = xmlDoc.GetElementsByTagName("ErrorDetail");
 
-
-            return Content(response, "application/xml");
-        }
-
-        public ActionResult RequestSecretList()
-        {
-            RequestReceive source = new RequestReceive()
+            if (error.Count > 0)
             {
-                MessageID = "Test",
-                To = "http://dev.scp2.ecms.dga.or.th/ecms-ws01/service2"
-            };
-            var xml = XMLCreation.RequestGetSecretCodes(source);
-            var response = postXMLData(source.To, xml);
+                List<ErrorDetail> listError = new List<ErrorDetail>();
+                for (int i = 0; i < error.Count; i++)
+                {
 
+                    ErrorDetail errorDetail = new ErrorDetail()
+                    {
+                        ErrorCode = error[i].ChildNodes[0].InnerXml,
+                        ErrorDescription = error[i].ChildNodes[1].InnerXml,
+                    };
 
-            return Content(response, "application/xml");
-        }
+                    listError.Add(errorDetail);
 
-        public ActionResult RequestSpeedList()
-        {
-            RequestReceive source = new RequestReceive()
+                }
+                return Json(listError, JsonRequestBehavior.AllowGet);
+            }
+            else
             {
-                MessageID = "Test",
-                To = "http://dev.scp2.ecms.dga.or.th/ecms-ws01/service2"
-            };
-            var xml = XMLCreation.RequestGetSpeedCodes(source);
-            var response = postXMLData(source.To, xml);
-
-
+                var value = xmlDoc.GetElementsByTagName("ECMSTime");
+                if (value.Count > 0)
+                {
+                    return Content(value[0].InnerXml, "application/xml");
+                }
+            }
             return Content(response, "application/xml");
         }
-
-        public ActionResult RequestMinistryList()
-        {
-            RequestReceive source = new RequestReceive()
-            {
-                MessageID = "Test",
-                To = "http://dev.scp2.ecms.dga.or.th/ecms-ws01/service2"
-            };
-            var xml = XMLCreation.RequestGetMinistry(source);
-            var response = postXMLData(source.To, xml);
+        #endregion ============== Sevice ==============
 
 
-            return Content(response, "application/xml");
-        }
+
     }
 
-    public class Organization
+    public class OrganizationApi
     {
-        public string ID { get; set; }
-        public string URL { get; set; }
-        public string Name { get; set; }
+        public string Id { get; set; }
+        public string Url { get; set; }
+        public string EnName { get; set; }
+        public string ThName { get; set; }
+
+    }
+
+    public class MinistryApi
+    {
+        public string Id { get; set; }
+        public string ThName { get; set; }
+
+    }
+
+    public class SpeedApi
+    {
+        public string value { get; set; }
+        public string description { get; set; }
+
+    }
+
+    public class SecretApi
+    {
+        public string value { get; set; }
+        public string description { get; set; }
+    }
+
+    public class FileApi
+    {
+        public string FileExtension { get; set; }
+        public string ContentType { get; set; }
+
 
     }
 }
