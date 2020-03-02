@@ -1319,8 +1319,12 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                 ErrorDescription = error[i].ChildNodes[1].InnerXml,
                             };
 
+                            resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
                             resp.ResponseObject = errorDetail;
+
                         }
+
+                        
                     }
                     else
                     {
@@ -1340,6 +1344,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                 resp.Status = false;
                 resp.Description = ex.Message;
             }
+           
             return Json(resp, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet);
         }
 
@@ -1371,6 +1376,8 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                         ErrorCode = error[i].ChildNodes[0].InnerXml,
                         ErrorDescription = error[i].ChildNodes[1].InnerXml,
                     };
+
+                    //resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
                 }
 
             }
@@ -1630,6 +1637,8 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                 ErrorCode = error[i].ChildNodes[0].InnerXml,
                                 ErrorDescription = error[i].ChildNodes[1].InnerXml,
                             };
+                            
+                            resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
                             resp.Status = false;
                         }
                     }
@@ -1699,7 +1708,9 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                 ErrorCode = error[i].ChildNodes[0].InnerXml,
                                 ErrorDescription = error[i].ChildNodes[1].InnerXml,
                             };
+                            resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
                         }
+                        
                         resp.Status = false;
                     }
                     else
@@ -1763,7 +1774,9 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                 ErrorCode = error[i].ChildNodes[0].InnerXml,
                                 ErrorDescription = error[i].ChildNodes[1].InnerXml,
                             };
+                            resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
                         }
+                        
                         resp.Status = false;
                     }
                     else
@@ -1825,7 +1838,9 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                 ErrorCode = error[i].ChildNodes[0].InnerXml,
                                 ErrorDescription = error[i].ChildNodes[1].InnerXml,
                             };
+                            resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
                         }
+                       
                         resp.Status = false;
                     }
                     else
@@ -1889,7 +1904,9 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                 ErrorCode = error[i].ChildNodes[0].InnerXml,
                                 ErrorDescription = error[i].ChildNodes[1].InnerXml,
                             };
+                            resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
                         }
+                      
                         resp.Status = false;
                     }
                     else
@@ -1950,9 +1967,12 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             ErrorCode = error[i].ChildNodes[0].InnerXml,
                             ErrorDescription = error[i].ChildNodes[1].InnerXml,
                         };
+
+                        resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
                     }
+                  
                     resp.Status = false;
-                    resp.Description = "ไม่สามารถดึงข้อมูลจากระบบ E-CMS ได้";
+                    //resp.Description = "ไม่สามารถดึงข้อมูลจากระบบ E-CMS ได้";
 
                 }
                 else
