@@ -1370,14 +1370,11 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             {
                 for (int i = 0; i < error.Count; i++)
                 {
-
                     ErrorDetail errorDetail = new ErrorDetail()
                     {
                         ErrorCode = error[i].ChildNodes[0].InnerXml,
                         ErrorDescription = error[i].ChildNodes[1].InnerXml,
-                    };
-
-                    //resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
+                    };                    
                 }
 
             }
@@ -1972,7 +1969,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                     }
                   
                     resp.Status = false;
-                    //resp.Description = "ไม่สามารถดึงข้อมูลจากระบบ E-CMS ได้";
+                   
 
                 }
                 else
@@ -1982,6 +1979,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                     var cDate = doc.GetElementsByTagName("CorrespondenceDate");
                     var sj = doc.GetElementsByTagName("Subject");
                     var aId = doc.GetElementsByTagName("AcceptID");
+                    
                     var rj = doc.GetElementsByTagName("RejectLetterNotifier");
                     var iv = doc.GetElementsByTagName("InvalidLetterNotifier");
                     var iva = doc.GetElementsByTagName("InvalidAcceptIdNotifier");
