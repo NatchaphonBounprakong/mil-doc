@@ -1250,7 +1250,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                         ReceiverJobTitle = document.ReceiverPosition,
                         ReceiverMinistryID = receive.Code.ToString().Substring(0, 2),
                         Attachment = "-",
-                        SendDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"),
+                        SendDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss",new CultureInfo("en-US")),
                         Description = document.Description,
                         MainLetterBinaryObjectMimeCode = ConvertContentType(Path.GetExtension(document.MainAttachmentName)),
                         MainLetterBinaryObject = pdfBase64,
