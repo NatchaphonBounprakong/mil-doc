@@ -1718,7 +1718,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             if (pID.Count > 0)
                             {
                                 var processId = pID[0].InnerXml.ToString();
-                                resp = docService.UpdateDocumentInStatus(id, processId, "ส่งหนังสือแจ้งเลขรับแล้ว");
+                                resp = docService.UpdateDocumentInStatus(id, processId, "ส่งเลขรับเพื่ออ้างอิง");
                             }
                         }
 
@@ -1912,7 +1912,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                         if (pID.Count > 0)
                         {
                             var processId = pID[0].InnerXml.ToString();
-                            resp = docService.UpdateDocumentStatus(id, processId, "ส่งหนังสือแจ้งเลขรับผิด");
+                            resp = docService.UpdateDocumentStatus(id, processId, "ระบบฯได้ส่งหนังสือแจ้งเลขรับผิด");
                         }
 
 
