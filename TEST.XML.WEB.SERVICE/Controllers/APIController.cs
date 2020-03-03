@@ -2769,6 +2769,23 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             }
             return Content(response, "application/xml");
         }
+
+        public ActionResult RequestIpCheck()
+        {
+            string IPAddress = "";
+            IPHostEntry Host = default(IPHostEntry);
+            string Hostname = null;
+            Hostname = System.Environment.MachineName;
+            Host = Dns.GetHostEntry(Hostname);
+            foreach (IPAddress IP in Host.AddressList)
+            {
+                if (IP.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    IPAddress = Convert.ToString(IP);
+                }
+            }
+            return Content(IPAddress);
+        }
         #endregion ============== Sevice ==============
 
 
