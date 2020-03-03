@@ -1647,7 +1647,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             if (pID.Count > 0)
                             {
                                 var processId = pID[0].InnerXml.ToString();
-                                resp = docService.UpdateDocumentInStatus(id, processId, "ส่งหนังสือตอบรับแล้ว");
+                                resp = docService.UpdateDocumentInStatus(id, processId, "ปลายทางส่งแจ้งรับ");
                             }
                         }
 
