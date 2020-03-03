@@ -206,7 +206,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             return resp;
         }
 
-        public Response UpdateDocumentReceiveNotifier(Document doc,string acceptDept)
+        public Response UpdateDocumentReceiveNotifier(Document doc, string acceptDept)
         {
             try
             {
@@ -235,7 +235,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                             };
 
                             ctx.DocumentProcess.Add(docProcess);
-                          
+
                             obj.Status = "ปลายทางได้รับหนังสือ";
                             obj.ProcessId = doc.ProcessId;
 
@@ -258,7 +258,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             return resp;
         }
 
-        public Response UpdateDocumentAcceptId(Document doc, string acceptId,string acceptDept)
+        public Response UpdateDocumentAcceptId(Document doc, string acceptId, string acceptDept)
         {
             try
             {
@@ -311,7 +311,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             return resp;
         }
 
-        public Response UpdateDocumentReject(Document doc,string acceptDept)
+        public Response UpdateDocumentReject(Document doc, string acceptDept)
         {
             try
             {
@@ -328,8 +328,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         {
                             resp.Status = true;
                             resp.ResponseObject = 0;
-                           
-                           
+
+
                         }
                         else
                         {
@@ -343,7 +343,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                             };
 
                             ctx.DocumentProcess.Add(docProcess);
-                            
+
                             obj.Status = "ปฏิเสธการรับหนังสือ";
                             obj.ProcessId = doc.ProcessId;
                             ctx.SaveChanges();
@@ -364,7 +364,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             return resp;
         }
 
-        public Response UpdateDocumentInvalid(Document doc,string acceptDept)
+        public Response UpdateDocumentInvalid(Document doc, string acceptDept)
         {
             try
             {
@@ -415,7 +415,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             return resp;
         }
 
-        public Response UpdateDocumentInvalidAcceptId(Document doc,string acceptId)
+        public Response UpdateDocumentInvalidAcceptId(Document doc, string acceptId)
         {
             try
             {
@@ -536,7 +536,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
 
             return resp;
         }
-              
+
         public Response GetDocumentList()
         {
             try
@@ -653,7 +653,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         Receive = x.Organization1.Name,
                         x.AcceptId
                     }).OrderByDescending(o => o.Id).ToList();
-                    
+
                     if (doc != null)
                     {
                         resp.ResponseObject = doc;
@@ -804,7 +804,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                             State = "บันทึก",
                             Type = "1",
                             FileSize = ConvertBytesToMegabytes(files[i].Length).ToString("N5") + " mb",
-                    };
+                        };
                         ctx.DocumentAttachment.Add(att);
                         i++;
                     }
@@ -874,7 +874,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                 {
                     var doc = ctx.DocumentIn.Where(o => o.ProcessId == docIn.ProcessId).FirstOrDefault();
 
-                    if (doc!=null)
+                    if (doc != null)
                     {
                         resp.ResponseObject = doc;
                     }
@@ -889,7 +889,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                             }
                         };
                         ctx.DocumentIn.Add(docIn);
-                        
+
                         DocumentProcess docProcess = new DocumentProcess()
                         {
                             CreatedDate = DateTime.Now,
@@ -899,7 +899,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         };
 
                         ctx.DocumentProcess.Add(docProcess);
-                        
+
                         ctx.SaveChanges();
                         resp.ResponseObject = docIn;
                     }
@@ -1090,7 +1090,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
 
             return resp;
         }
-       
+
 
         public string ConvertContentType(string ext)
         {
@@ -1211,6 +1211,32 @@ namespace WEB.API.DGA.MIL.DOC.Services
 
                     resp.Status = true;
 
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Status = false;
+                resp.Description = ex.Message;
+            }
+
+            return resp;
+        }
+
+
+        public Response IsAcceptIdDuplicate(string acceptId)
+        {
+            try
+            {
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+                    var doc = ctx.DocumentIn.Where(o => o.AcceptId == acceptId).FirstOrDefault();
+                    if (doc != null)
+                    {
+                        //doc.Organization = ctx.Organization.Where(o => o.Id == doc.SenderOrganizationId).FirstOrDefault();
+                        //doc.Organization1 = ctx.Organization.Where(o => o.Id == doc.ReceiverOrganizationId).FirstOrDefault();
+                        resp.Description = "ลงรับหนังสือซ้า";
+                        resp.Status = false;
+                    }
                 }
             }
             catch (Exception ex)

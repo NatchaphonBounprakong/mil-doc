@@ -1672,58 +1672,65 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             var resp = new Response();
             try
             {
-                resp = docService.GetDocumentInWithAtt(id);
+                resp = docService.IsAcceptIdDuplicate(acceptId);
                 if (resp.Status)
                 {
-
-                    DocumentIn document = resp.ResponseObject;
-                    docService.UpdateDocumentInAcceptId(id, acceptId);
-                    RequestAcceptLetterNotifier source = new RequestAcceptLetterNotifier()
+                    resp = docService.GetDocumentInWithAtt(id);
+                    if (resp.Status)
                     {
-                        CorrespondenceDate = document.Date,
-                        LetterID = document.No,
-                        MessageID = id.ToString(),
-                        Subject = document.Subject,
-                        To = document.Organization.Url,
-                        AcceptID = acceptId
-                    };
 
-                    var xml = XMLCreation.RequestAcceptLetterNotifier(source);
-                    var response = postXMLData(document.Organization1.Url, xml);
+                        DocumentIn document = resp.ResponseObject;
 
-                    XmlDocument doc = new XmlDocument();
-                    doc.LoadXml(response);
-
-                    var error = doc.GetElementsByTagName("ErrorDetail");
-                    if (error.Count > 0)
-                    {
-                        for (int i = 0; i < error.Count; i++)
+                        RequestAcceptLetterNotifier source = new RequestAcceptLetterNotifier()
                         {
+                            CorrespondenceDate = document.Date,
+                            LetterID = document.No,
+                            MessageID = id.ToString(),
+                            Subject = document.Subject,
+                            To = document.Organization.Url,
+                            AcceptID = acceptId
+                        };
 
-                            ErrorDetail errorDetail = new ErrorDetail()
-                            {
-                                ErrorCode = error[i].ChildNodes[0].InnerXml,
-                                ErrorDescription = error[i].ChildNodes[1].InnerXml,
-                            };
-                            resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
-                        }
-                        
-                        resp.Status = false;
-                    }
-                    else
-                    {
-                        if (resp.Status)
+                        var xml = XMLCreation.RequestAcceptLetterNotifier(source);
+                        var response = postXMLData(document.Organization1.Url, xml);
+
+                        XmlDocument doc = new XmlDocument();
+                        doc.LoadXml(response);
+
+                        var error = doc.GetElementsByTagName("ErrorDetail");
+                        if (error.Count > 0)
                         {
-                            var pID = doc.GetElementsByTagName("ProcessID");
-                            if (pID.Count > 0)
+                            for (int i = 0; i < error.Count; i++)
                             {
-                                var processId = pID[0].InnerXml.ToString();
-                                resp = docService.UpdateDocumentInStatus(id, processId, "ส่งเลขรับเพื่ออ้างอิง");
+
+                                ErrorDetail errorDetail = new ErrorDetail()
+                                {
+                                    ErrorCode = error[i].ChildNodes[0].InnerXml,
+                                    ErrorDescription = error[i].ChildNodes[1].InnerXml,
+                                };
+                                resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
                             }
-                        }
 
+                            resp.Status = false;
+                        }
+                        else
+                        {
+                            if (resp.Status)
+                            {
+                                var pID = doc.GetElementsByTagName("ProcessID");
+                                if (pID.Count > 0)
+                                {
+                                    var processId = pID[0].InnerXml.ToString();
+                                    docService.UpdateDocumentInAcceptId(id, acceptId);
+                                    resp = docService.UpdateDocumentInStatus(id, processId, "ส่งเลขรับเพื่ออ้างอิง");
+                                }
+                            }
+
+                        }
                     }
                 }
+               
+                
 
             }
             catch (Exception ex)
