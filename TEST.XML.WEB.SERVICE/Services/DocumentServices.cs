@@ -865,6 +865,45 @@ namespace WEB.API.DGA.MIL.DOC.Services
             return resp;
         }
 
+        public Response AddCircleDocument(Document doc)
+        {
+
+            try
+            {
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+                    if (doc.DocumentReference != null)
+                    {
+                        foreach (var item in doc.DocumentReference)
+                        {
+                            item.State = "บันทึก";
+                        }
+                    };
+                    if (ctx.Document.Any(o => o.No == doc.No && o.SenderOrganizationId == doc.SenderOrganizationId && o.ReceiverOrganizationId == doc.ReceiverOrganizationId))
+                    {
+                        resp.Status = false;
+                        resp.Description = "เลขที่หนังสือซ้ำ";
+                    }
+                    else
+                    {
+                        doc.CreatedDate = DateTime.Now;
+                        ctx.Document.Add(doc);
+                        ctx.SaveChanges();
+                        resp.Status = true;                   
+                        resp.ResponseObject = doc;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Status = false;
+                resp.Description = ex.Message;
+            }
+
+            return resp;
+        }
+
         public Response AddDocumentIn(DocumentIn docIn)
         {
 
