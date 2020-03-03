@@ -1398,8 +1398,8 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                         Date = cDate[0].InnerXml.ToString(),
                         Subject = sj[0].InnerXml.ToString()
                     };
-
-                    var resp = docService.UpdateDocumentInvalidAcceptId(document);
+                    var acceptDept = xmlDoc.GetElementsByTagName("Code")[0].InnerXml;
+                    var resp = docService.UpdateDocumentInvalidAcceptId(document,acceptDept);
 
                     if (resp.Status && resp.ResponseObject != 0)
                     {
@@ -1999,7 +1999,8 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             };
 
                             //var acceptId = aId[0].InnerXml.ToString();
-                            resp = docService.UpdateDocumentInvalidAcceptId(document);
+                            var acceptDept = doc.GetElementsByTagName("Code")[0].InnerXml;
+                            resp = docService.UpdateDocumentInvalidAcceptId(document, acceptDept);
 
                             if (resp.Status && resp.ResponseObject != 0)
                             {
@@ -2044,7 +2045,8 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             };
 
                             var acceptId = aId[0].InnerXml.ToString();
-                            resp = docService.UpdateDocumentAcceptId(document, acceptId);
+                            var acceptDept = doc.GetElementsByTagName("Code")[0].InnerXml;
+                            resp = docService.UpdateDocumentAcceptId(document, acceptId, acceptDept);
 
                             if (resp.Status && resp.ResponseObject != 0)
                             {
@@ -2076,7 +2078,8 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             };
 
                             //var acceptId = aId[0].InnerXml.ToString();
-                            resp = docService.UpdateDocumentReject(document);
+                            var acceptDept = doc.GetElementsByTagName("Code")[0].InnerXml;
+                            resp = docService.UpdateDocumentReject(document,acceptDept);
 
                             if (resp.Status && resp.ResponseObject != 0)
                             {
@@ -2122,7 +2125,8 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             };
 
                             //var acceptId = aId[0].InnerXml.ToString();
-                            resp = docService.UpdateDocumentInvalid(document);
+                            var acceptDept = doc.GetElementsByTagName("Code")[0].InnerXml;
+                            resp = docService.UpdateDocumentInvalid(document, acceptDept);
 
                             if (resp.Status && resp.ResponseObject != 0)
                             {
@@ -2155,6 +2159,9 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                     }
                     else
                     {
+                        //ACCept ID
+                      
+                        
                         resp.Description = "พบหนังสือตอบกลับ";
                         if (pID.Count > 0)
                         {
@@ -2166,7 +2173,8 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                 Subject = sj[0].InnerXml.ToString(),
                                 No = lId[0].InnerXml.ToString(),
                             };
-                            resp = docService.UpdateDocumentReceiveNotifier(document);
+                            var acceptDept = doc.GetElementsByTagName("Code")[0].InnerXml;
+                            resp = docService.UpdateDocumentReceiveNotifier(document, acceptDept);
 
                             if (resp.Status && resp.ResponseObject != 0)
                             {

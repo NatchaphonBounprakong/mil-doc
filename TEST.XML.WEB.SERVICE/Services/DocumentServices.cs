@@ -206,7 +206,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             return resp;
         }
 
-        public Response UpdateDocumentReceiveNotifier(Document doc)
+        public Response UpdateDocumentReceiveNotifier(Document doc,string acceptDept)
         {
             try
             {
@@ -214,7 +214,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
                 {
                     var obj = ctx.Document.Where(o => o.No == doc.No
                     && o.Date == doc.Date
-                    && o.Subject == doc.Subject).FirstOrDefault();
+                    && o.Subject == doc.Subject
+                    && o.Organization1.Code == acceptDept).FirstOrDefault();
 
                     if (obj != null)
                     {
@@ -257,7 +258,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             return resp;
         }
 
-        public Response UpdateDocumentAcceptId(Document doc, string acceptId)
+        public Response UpdateDocumentAcceptId(Document doc, string acceptId,string acceptDept)
         {
             try
             {
@@ -265,7 +266,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
                 {
                     var obj = ctx.Document.Where(o => o.No == doc.No
                     && o.Date == doc.Date
-                    && o.Subject == doc.Subject).FirstOrDefault();
+                    && o.Subject == doc.Subject
+                    && o.Organization1.Code == acceptDept).FirstOrDefault();
 
                     if (obj != null)
                     {
@@ -309,7 +311,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             return resp;
         }
 
-        public Response UpdateDocumentReject(Document doc)
+        public Response UpdateDocumentReject(Document doc,string acceptDept)
         {
             try
             {
@@ -317,7 +319,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
                 {
                     var obj = ctx.Document.Where(o => o.No == doc.No
                     && o.Date == doc.Date
-                    && o.Subject == doc.Subject).FirstOrDefault();
+                    && o.Subject == doc.Subject
+                    && o.Organization1.Code == acceptDept).FirstOrDefault();
 
                     if (obj != null)
                     {
@@ -361,7 +364,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             return resp;
         }
 
-        public Response UpdateDocumentInvalid(Document doc)
+        public Response UpdateDocumentInvalid(Document doc,string acceptDept)
         {
             try
             {
@@ -369,7 +372,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
                 {
                     var obj = ctx.Document.Where(o => o.No == doc.No
                     && o.Date == doc.Date
-                    && o.Subject == doc.Subject).FirstOrDefault();
+                    && o.Subject == doc.Subject
+                    && o.Organization1.Code == acceptDept).FirstOrDefault();
 
                     if (obj != null)
                     {
@@ -411,7 +415,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             return resp;
         }
 
-        public Response UpdateDocumentInvalidAcceptId(Document doc)
+        public Response UpdateDocumentInvalidAcceptId(Document doc,string acceptId)
         {
             try
             {
@@ -419,7 +423,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
                 {
                     var obj = ctx.DocumentIn.Where(o => o.No == doc.No
                     && o.Date == doc.Date
-                    && o.Subject == doc.Subject).OrderByDescending(o => o.Id).FirstOrDefault();
+                    && o.Subject == doc.Subject
+                    && o.Organization1.Code == acceptId).OrderByDescending(o => o.Id).FirstOrDefault();
 
                     if (obj != null)
                     {
