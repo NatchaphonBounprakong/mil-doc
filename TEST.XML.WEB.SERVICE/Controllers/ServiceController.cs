@@ -101,7 +101,6 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             return Json(resp, JsonRequestBehavior.AllowGet);
         }
 
-
         [HttpPost]
         public JsonResult AddCircleDocument([FromBody]Document doc, string from, string to, List<int> ids)
         {
@@ -329,8 +328,6 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
 
             return Json(resp, JsonRequestBehavior.AllowGet);
         }
-
-
 
         [HttpPost]
         public JsonResult EditDocument([FromBody]Document doc, string from, string to)
