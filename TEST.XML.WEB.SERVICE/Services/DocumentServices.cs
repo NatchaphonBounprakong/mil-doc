@@ -689,6 +689,31 @@ namespace WEB.API.DGA.MIL.DOC.Services
             {
                 resp.Status = false;
                 resp.Description = ex.Message;
+                resp.ResponseObject = ex.ToString();
+            }
+
+            return resp;
+        }
+
+
+        public Response Test()
+        {
+            try
+            {
+
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+                    var organizations = ctx.Organization.OrderByDescending(o => o.Name).ToList();
+                    if (organizations != null)
+                    {
+                        resp.ResponseObject = organizations;
+                        resp.Status = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
 
             return resp;

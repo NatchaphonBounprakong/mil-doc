@@ -35,7 +35,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
 
             return Json(resp, JsonRequestBehavior.AllowGet);
         }
-
+       
         [HttpGet]
         public JsonResult GetDocumentListByOrganizeId(int organizationId)
         {

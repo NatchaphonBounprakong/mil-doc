@@ -209,6 +209,7 @@
     <Content Include="DB\DGAMilDoc.bak" />
     <None Include="packages.config" />
     <Content Include="Views\Layout.cshtml" />
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

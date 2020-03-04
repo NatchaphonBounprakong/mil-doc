@@ -24,19 +24,6 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             
         }
 
-        [HttpPost]
-        public ActionResult Getuser()
-        {
-            if(Session["User"] != null)
-            {
-                return Content("1");
-            }
-            else
-            {
-                return Content("0");
-            }
-
-
-        }
+        
     }
 }
