@@ -1114,6 +1114,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
 
         }
         #endregion
+     
         public ActionResult RequestReceiveDocumentLetterDelete(string delfrom)
         {
             var from = delfrom;
@@ -1180,6 +1181,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
 
             return Content(response, "application/xml");
         }
+       
         public string postXMLData(string destinationUrl, string requestXml)
         {
             try
@@ -1627,16 +1629,16 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                     if (error.Count > 0)
                     {
                         for (int i = 0; i < error.Count; i++)
-                        {
-
+                        {                          
                             ErrorDetail errorDetail = new ErrorDetail()
                             {
                                 ErrorCode = error[i].ChildNodes[0].InnerXml,
                                 ErrorDescription = error[i].ChildNodes[1].InnerXml,
                             };
                             
-                            resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
                             resp.Status = false;
+                            resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
+                            resp.ResponseObject = errorDetail;
                         }
                     }
                     else
@@ -1708,7 +1710,10 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                     ErrorCode = error[i].ChildNodes[0].InnerXml,
                                     ErrorDescription = error[i].ChildNodes[1].InnerXml,
                                 };
+
+                                resp.Status = false;
                                 resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
+                                resp.ResponseObject = errorDetail;
                             }
 
                             resp.Status = false;
@@ -1778,10 +1783,13 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                 ErrorCode = error[i].ChildNodes[0].InnerXml,
                                 ErrorDescription = error[i].ChildNodes[1].InnerXml,
                             };
+
+                            resp.Status = false;
                             resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
+                            resp.ResponseObject = errorDetail;
                         }
                         
-                        resp.Status = false;
+                       
                     }
                     else
                     {
@@ -1841,8 +1849,9 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             {
                                 ErrorCode = error[i].ChildNodes[0].InnerXml,
                                 ErrorDescription = error[i].ChildNodes[1].InnerXml,
-                            };
+                            };                            
                             resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
+                            resp.ResponseObject = errorDetail;
                         }
                        
                         resp.Status = false;
@@ -1908,6 +1917,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                 ErrorCode = error[i].ChildNodes[0].InnerXml,
                                 ErrorDescription = error[i].ChildNodes[1].InnerXml,
                             };
+                           
                             resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
                         }
                       

@@ -1276,6 +1276,10 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         resp.Description = "ลงรับหนังสือซ้า";
                         resp.Status = false;
                     }
+                    else
+                    {
+                        resp.Status = true;
+                    }
                 }
             }
             catch (Exception ex)
