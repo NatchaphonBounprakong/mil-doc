@@ -340,7 +340,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                 item.MimeCode = ConvertContentType(System.IO.Path.GetExtension(item.AttachmentName));
             }
 
-            var resp = docService.EditDocument(doc);
+            var resp = docService.UpdateDocument(doc);
 
             return Json(resp, JsonRequestBehavior.AllowGet);
         }
@@ -362,7 +362,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                 {
                     HttpPostedFileBase file = Request.Files[fileName];
                     var mainFile = ConverToBytes(file);
-                    docService.SetMainAttachment(id, mainFile);
+                    docService.UpdateMainAttachment(id, mainFile);
                 }
                 else
                 {
@@ -374,7 +374,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             }
 
 
-            var resp = docService.EditDocumentAttachment(id, name, fileBytes);
+            var resp = docService.UpdateDocumentAttachment(id, name, fileBytes);
 
             return Json(resp, JsonRequestBehavior.AllowGet);
         }
@@ -398,12 +398,12 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                 {
                     HttpPostedFileBase file = Request.Files[fileName];
                     var mainFile = ConverToBytes(file);
-                    docService.SetMainAttachment(id, mainFile);
+                    docService.UpdateMainAttachment(id, mainFile);
                 }
             }
 
 
-            var resp = docService.SetDocumentAttachment(id, fileBytes);
+            var resp = docService.UpdateDocumentAttachment(id, fileBytes);
             resp.ResponseObject = id;
             return Json(resp, JsonRequestBehavior.AllowGet);
         }
@@ -427,13 +427,13 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                 {
                     HttpPostedFileBase file = Request.Files[fileName];
                     var mainFile = ConverToBytes(file);
-                    docService.SetMainAttachment(id, mainFile);
+                    docService.UpdateMainAttachment(id, mainFile);
                 }
             }
 
             APIController api = new APIController();
 
-            var resp = docService.SetDocumentAttachment(id, fileBytes);
+            var resp = docService.UpdateDocumentAttachment(id, fileBytes);
             if (resp.Status)
             {
                 api.RequestSendDocument(id);

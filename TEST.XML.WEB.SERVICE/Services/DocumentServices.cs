@@ -11,6 +11,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
     public class DocumentServices
     {
         public Response resp = new Response();
+        
         public Response GetSpeedIDByCode(string code)
         {
             var speedID = 0;
@@ -27,7 +28,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             return resp;
 
         }
-
+        
         public Response GetSecretIDbyCode(string code)
         {
             var secretID = 0;
@@ -44,7 +45,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             return resp;
 
         }
-
+        
         public Response Getdocument(int id)
         {
             try
@@ -77,6 +78,34 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         doc.Organization1.Document1 = null;
                         doc.Organization1.DocumentIn1 = null;
                         doc.Organization1.Document = null;
+                        resp.ResponseObject = doc;
+                        resp.Status = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Status = false;
+                resp.Description = ex.Message;
+            }
+
+            return resp;
+        }
+
+        public Response GetdocumentWithAtt(int id)
+        {
+            try
+            {
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+                    var doc = ctx.Document
+                        .Include("DocumentAttachment")
+                        .Include("DocumentReference")
+                        .Include("Organization")
+                        .Include("Organization1").Where(o => o.Id == id).FirstOrDefault();
+                    if (doc != null)
+                    {
+
                         resp.ResponseObject = doc;
                         resp.Status = true;
                     }
@@ -142,23 +171,580 @@ namespace WEB.API.DGA.MIL.DOC.Services
             return resp;
         }
 
-        public Response GetdocumentWithAtt(int id)
+        public Response GetDocumentInWithAtt(int id)
         {
             try
             {
                 using (DGAMilDocEntities ctx = new DGAMilDocEntities())
                 {
-                    var doc = ctx.Document
+                    var doc = ctx.DocumentIn
                         .Include("DocumentAttachment")
                         .Include("DocumentReference")
                         .Include("Organization")
                         .Include("Organization1").Where(o => o.Id == id).FirstOrDefault();
                     if (doc != null)
                     {
-
+                        //doc.Organization = ctx.Organization.Where(o => o.Id == doc.SenderOrganizationId).FirstOrDefault();
+                        //doc.Organization1 = ctx.Organization.Where(o => o.Id == doc.ReceiverOrganizationId).FirstOrDefault();
                         resp.ResponseObject = doc;
                         resp.Status = true;
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Status = false;
+                resp.Description = ex.Message;
+            }
+
+            return resp;
+        }
+
+        public Response GetDocumentList()
+        {
+            try
+            {
+
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+                    var doc = ctx.Document.Select(x => new
+                    {
+                        Id = x.Id,
+                        No = x.No,
+                        Date = x.Date,
+                        Subject = x.Subject,
+                        Receive = x.Organization1.Name,
+                        Status = x.Status,
+                        x.AcceptId,
+
+                    }).OrderByDescending(o => o.Id).ToList();
+                    if (doc != null)
+                    {
+                        resp.ResponseObject = doc;
+                        resp.Status = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Status = false;
+                resp.Description = ex.Message;
+            }
+
+            return resp;
+        }
+
+        public Response GetDocumentListByOrganizeId(int organizationId)
+        {
+            try
+            {
+
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+                    var doc = ctx.Document.Where(o => o.SenderOrganizationId == organizationId).Select(x => new
+                    {
+                        Id = x.Id,
+                        No = x.No,
+                        Date = x.Date,
+                        Subject = x.Subject,
+                        Receive = x.Organization1.Name,
+                        Status = x.Status,
+                        x.AcceptId,
+
+                    }).OrderByDescending(o => o.Id).ToList();
+                    if (doc != null)
+                    {
+                        resp.ResponseObject = doc;
+                        resp.Status = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Status = false;
+                resp.Description = ex.Message;
+            }
+
+            return resp;
+        }
+
+        public Response GetDocumentInList()
+        {
+            try
+            {
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+                    var doc = ctx.DocumentIn.Select(x => new
+                    {
+                        Id = x.Id,
+                        x.BookId,
+                        Date = x.Date,
+                        Subject = x.Subject,
+                        Status = x.Status,
+                        Receive = x.Organization.Name,//StaticOrganization.organizations[x.ReceiverOrganizationId].Name,
+                        x.AcceptId
+                    }).OrderByDescending(o => o.Id).ToList();
+                    if (doc != null)
+                    {
+                        resp.ResponseObject = doc;
+                        resp.Status = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Status = false;
+                resp.Description = ex.Message;
+            }
+
+            return resp;
+        }
+
+        public Response GetDocumentInListByOrganizeId(int organizationId)
+        {
+            try
+            {
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+                    var doc = ctx.DocumentIn.Where(o => o.ReceiverOrganizationId == organizationId).Select(x => new
+                    {
+                        Id = x.Id,
+                        x.BookId,
+                        Date = x.Date,
+                        Subject = x.Subject,
+                        Status = x.Status,
+                        Receive = x.Organization1.Name,
+                        x.AcceptId
+                    }).OrderByDescending(o => o.Id).ToList();
+
+                    if (doc != null)
+                    {
+                        resp.ResponseObject = doc;
+                        resp.Status = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Status = false;
+                resp.Description = ex.Message;
+            }
+
+            return resp;
+        }
+
+        public Response GetOrganizationList()
+        {
+            try
+            {
+
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+                    var organizations = ctx.Organization.OrderByDescending(o => o.Name).ToList();
+                    if (organizations != null)
+                    {
+                        resp.ResponseObject = organizations;
+                        resp.Status = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Status = false;
+                resp.Description = ex.Message;
+                resp.ResponseObject = ex.ToString();
+            }
+
+            return resp;
+        }
+
+        public Response GetOtherAttachmentById(int id)
+        {
+            try
+            {
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+                    var att = ctx.DocumentAttachment.Where(o => o.Id == id).FirstOrDefault();
+
+                    if (att != null)
+                    {
+                        resp.ResponseObject = att;
+                        resp.Status = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Status = false;
+                resp.Description = ex.Message;
+            }
+
+            return resp;
+        }
+
+        public Response GetMainAttachmentById(int id)
+        {
+            try
+            {
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+                    var docIn = ctx.DocumentIn.Where(o => o.Id == id).FirstOrDefault();
+
+                    if (docIn != null)
+                    {
+
+                        resp.ResponseObject = docIn;
+                        resp.Status = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Status = false;
+                resp.Description = ex.Message;
+            }
+
+            return resp;
+        }
+
+        public Response GetOrganization()
+        {
+            Response resp = new Response();
+            try
+            {
+
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+
+                    var obj = ctx.Organization.ToList();
+                    if (obj != null)
+                    {
+                        StaticOrganization.organizations = obj;
+                    }
+
+                    resp.Status = true;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Status = false;
+                resp.Description = ex.Message;
+            }
+
+            return resp;
+
+
+        }
+
+        public Response GetOrganizationByCode(string Code)
+        {
+            Response resp = new Response();
+            try
+            {
+
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+
+                    var obj = ctx.Organization.Where(o => o.Code == Code).FirstOrDefault();
+                    if (obj != null)
+                    {
+                        resp.ResponseObject = obj;
+                    }
+
+                    resp.Status = true;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Status = false;
+                resp.Description = ex.Message;
+            }
+
+            return resp;
+        }
+
+        public Response GetOrganizationById(int id)
+        {
+            Response resp = new Response();
+            try
+            {
+
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+
+                    var obj = ctx.Organization.Where(o => o.Id == id).FirstOrDefault();
+                    if (obj != null)
+                    {
+                        resp.ResponseObject = obj;
+                    }
+
+                    resp.Status = true;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Status = false;
+                resp.Description = ex.Message;
+            }
+
+            return resp;
+        }
+
+        public Response AddDocument(Document doc)
+        {
+
+            try
+            {
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+                    if (doc.DocumentReference != null)
+                    {
+                        foreach (var item in doc.DocumentReference)
+                        {
+                            item.State = "บันทึก";
+                        }
+                    };
+                    if (ctx.Document.Any(o => o.No == doc.No && o.SenderOrganizationId == doc.SenderOrganizationId && o.ReceiverOrganizationId == doc.ReceiverOrganizationId))
+                    {
+                        resp.Status = false;
+                        resp.Description = "เลขที่หนังสือซ้ำ";
+                    }
+                    else
+                    {
+                        doc.CreatedDate = DateTime.Now;
+                        ctx.Document.Add(doc);
+                        ctx.SaveChanges();
+                        resp.Status = true;
+                        doc.DocumentAttachment = null;
+                        doc.DocumentReference = null;
+                        resp.ResponseObject = doc;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Status = false;
+                resp.Description = ex.Message;
+            }
+
+            return resp;
+        }
+
+        public Response AddCircleDocument(Document doc)
+        {
+
+            try
+            {
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+                    if (doc.DocumentReference != null)
+                    {
+                        foreach (var item in doc.DocumentReference)
+                        {
+                            item.State = "บันทึก";
+                        }
+                    };
+                    if (ctx.Document.Any(o => o.No == doc.No && o.SenderOrganizationId == doc.SenderOrganizationId && o.ReceiverOrganizationId == doc.ReceiverOrganizationId))
+                    {
+                        resp.Status = false;
+                        resp.Description = "เลขที่หนังสือซ้ำ";
+                    }
+                    else
+                    {
+                        doc.CreatedDate = DateTime.Now;
+                        ctx.Document.Add(doc);
+                        ctx.SaveChanges();
+                        resp.Status = true;
+                        resp.ResponseObject = doc;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Status = false;
+                resp.Description = ex.Message;
+            }
+
+            return resp;
+        }
+
+        public Response AddDocumentIn(DocumentIn docIn)
+        {
+
+            try
+            {
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+                    var doc = ctx.DocumentIn.Where(o => o.ProcessId == docIn.ProcessId).FirstOrDefault();
+
+                    if (doc != null)
+                    {
+                        resp.ResponseObject = doc;
+                    }
+                    else
+                    {
+                        if (docIn.DocumentReference != null)
+                        {
+                            foreach (var item in docIn.DocumentReference)
+                            {
+                                item.State = "บันทึก";
+                                item.Type = 2;
+                            }
+                        };
+                        ctx.DocumentIn.Add(docIn);
+
+                        DocumentProcess docProcess = new DocumentProcess()
+                        {
+                            CreatedDate = DateTime.Now,
+                            DocumentInId = docIn.Id,
+                            ProcessId = docIn.ProcessId,
+                            Status = "รับหนังสือรอส่งหนังสือตอบรับ"
+                        };
+
+                        ctx.DocumentProcess.Add(docProcess);
+
+                        ctx.SaveChanges();
+                        resp.ResponseObject = docIn;
+                    }
+
+                    resp.Status = true;
+                    //resp.Description = "1";
+
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Status = false;
+                resp.Description = ex.Message;
+            }
+
+            return resp;
+        }
+      
+        public Response UpdateDocument(Document doc)
+        {
+
+            try
+            {
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+                    var document = ctx.Document.Include("DocumentReference").Where(o => o.Id == doc.Id).FirstOrDefault();
+                    if (document != null)
+                    {
+                        document.No = doc.No;
+                        document.From = doc.From;
+                        document.Type = doc.Type;
+                        document.Date = doc.Date;
+                        document.Subject = doc.Subject;
+                        document.Speed = doc.Speed;
+                        document.Secret = doc.Secret;
+                        document.Description = doc.Description;
+                        document.MainAttachmentName = doc.MainAttachmentName;
+                        document.MimeCode = doc.MimeCode;
+
+                        document.SenderPosition = doc.SenderPosition;
+                        document.SenderName = doc.SenderName;
+                        document.SenderSurname = doc.SenderSurname;
+
+                        document.ReceiverPosition = doc.ReceiverPosition;
+                        document.ReceiverName = doc.ReceiverName;
+                        document.ReceiverSurname = doc.ReceiverSurname;
+
+                        document.ReceiverOrganizationId = doc.ReceiverOrganizationId;
+
+                    }
+
+                    if (doc.DocumentReference != null)
+                    {
+                        var newRef = doc.DocumentReference.Where(o => o.State == "เพิ่ม").ToList();
+                        foreach (var refer in newRef)
+                        {
+                            refer.State = "บันทึก";
+                            document.DocumentReference.Add(refer);
+                        }
+
+                        var deleteRef = doc.DocumentReference.Where(o => o.State == "รอลบ").ToList();
+                        foreach (var refer in deleteRef)
+                        {
+
+                            var obj = ctx.DocumentReference.Where(o => o.Id == refer.Id).FirstOrDefault();
+                            if (obj != null)
+                            {
+                                ctx.DocumentReference.Remove(obj);
+                            }
+
+                        }
+
+                    }
+
+
+                    var attList = ctx.DocumentAttachment.Where(o => o.DocumentId == document.Id).ToList();
+                    foreach (var att in attList)
+                    {
+                        if (att.State == "รอลบ")
+                        {
+                            ctx.DocumentAttachment.Remove(att);
+                        }
+                    }
+
+
+
+
+                    ctx.SaveChanges();
+                    resp.Status = true;
+                    document.DocumentReference = null;
+                    document.DocumentAttachment = null;
+                    resp.ResponseObject = document;
+                    document.MainAttachmentBinary = null;
+
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Status = false;
+                resp.Description = ex.Message;
+            }
+
+            return resp;
+        }
+
+        public Response UpdateDocumentAttachment(int id, List<string> fileName, List<byte[]> files)
+        {
+
+            try
+            {
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+
+
+                    foreach (var file in fileName.Where(o => !o.Contains("mainFile")))
+                    {
+                        var i = 0;
+                        DocumentAttachment att = new DocumentAttachment()
+                        {
+                            DocumentId = id,
+                            AttachmentName = file,
+                            AttachmentBinary = files[i],
+                            MimeCode = ConvertContentType(System.IO.Path.GetExtension(file)),
+                            State = "บันทึก",
+                            Type = "1",
+                            FileSize = ConvertBytesToMegabytes(files[i].Length).ToString("N5") + " mb",
+                        };
+                        ctx.DocumentAttachment.Add(att);
+                        i++;
+                    }
+
+
+                    ctx.SaveChanges();
+                    resp.Status = true;
+
                 }
             }
             catch (Exception ex)
@@ -537,348 +1123,29 @@ namespace WEB.API.DGA.MIL.DOC.Services
             return resp;
         }
 
-        public Response GetDocumentList()
+        public Response UpdateDocumentAttachment(int id, List<byte[]> files)
         {
             try
             {
-
                 using (DGAMilDocEntities ctx = new DGAMilDocEntities())
                 {
-                    var doc = ctx.Document.Select(x => new
-                    {
-                        Id = x.Id,
-                        No = x.No,
-                        Date = x.Date,
-                        Subject = x.Subject,
-                        Receive = x.Organization1.Name,
-                        Status = x.Status,
-                        x.AcceptId,
-
-                    }).OrderByDescending(o => o.Id).ToList();
+                    var doc = ctx.Document.Include("DocumentAttachment").Where(o => o.Id == id).FirstOrDefault();
                     if (doc != null)
                     {
-                        resp.ResponseObject = doc;
-                        resp.Status = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
-            }
 
-            return resp;
-        }
-
-        public Response GetDocumentListByOrganizeId(int organizationId)
-        {
-            try
-            {
-
-                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
-                {
-                    var doc = ctx.Document.Where(o => o.SenderOrganizationId == organizationId).Select(x => new
-                    {
-                        Id = x.Id,
-                        No = x.No,
-                        Date = x.Date,
-                        Subject = x.Subject,
-                        Receive = x.Organization1.Name,
-                        Status = x.Status,
-                        x.AcceptId,
-
-                    }).OrderByDescending(o => o.Id).ToList();
-                    if (doc != null)
-                    {
-                        resp.ResponseObject = doc;
-                        resp.Status = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
-            }
-
-            return resp;
-        }
-
-        public Response GetDocumentInList()
-        {
-            try
-            {
-                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
-                {
-                    var doc = ctx.DocumentIn.Select(x => new
-                    {
-                        Id = x.Id,
-                        x.BookId,
-                        Date = x.Date,
-                        Subject = x.Subject,
-                        Status = x.Status,
-                        Receive = x.Organization.Name,//StaticOrganization.organizations[x.ReceiverOrganizationId].Name,
-                        x.AcceptId
-                    }).OrderByDescending(o => o.Id).ToList();
-                    if (doc != null)
-                    {
-                        resp.ResponseObject = doc;
-                        resp.Status = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
-            }
-
-            return resp;
-        }
-
-        public Response GetDocumentInListByOrganizeId(int organizationId)
-        {
-            try
-            {
-                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
-                {
-                    var doc = ctx.DocumentIn.Where(o => o.ReceiverOrganizationId == organizationId).Select(x => new
-                    {
-                        Id = x.Id,
-                        x.BookId,
-                        Date = x.Date,
-                        Subject = x.Subject,
-                        Status = x.Status,
-                        Receive = x.Organization1.Name,
-                        x.AcceptId
-                    }).OrderByDescending(o => o.Id).ToList();
-
-                    if (doc != null)
-                    {
-                        resp.ResponseObject = doc;
-                        resp.Status = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
-            }
-
-            return resp;
-        }
-
-        public Response GetOrganizationList()
-        {
-            try
-            {
-
-                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
-                {
-                    var organizations = ctx.Organization.OrderByDescending(o => o.Name).ToList();
-                    if (organizations != null)
-                    {
-                        resp.ResponseObject = organizations;
-                        resp.Status = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
-                resp.ResponseObject = ex.ToString();
-            }
-
-            return resp;
-        }
-
-
-        public Response Test()
-        {
-            try
-            {
-
-                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
-                {
-                    var organizations = ctx.Organization.OrderByDescending(o => o.Name).ToList();
-                    if (organizations != null)
-                    {
-                        resp.ResponseObject = organizations;
-                        resp.Status = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-
-            return resp;
-        }
-
-        public Response EditDocument(Document doc)
-        {
-
-            try
-            {
-                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
-                {
-                    var document = ctx.Document.Include("DocumentReference").Where(o => o.Id == doc.Id).FirstOrDefault();
-                    if (document != null)
-                    {
-                        document.No = doc.No;
-                        document.From = doc.From;
-                        document.Type = doc.Type;
-                        document.Date = doc.Date;
-                        document.Subject = doc.Subject;
-                        document.Speed = doc.Speed;
-                        document.Secret = doc.Secret;
-                        document.Description = doc.Description;
-                        document.MainAttachmentName = doc.MainAttachmentName;
-                        document.MimeCode = doc.MimeCode;
-
-                        document.SenderPosition = doc.SenderPosition;
-                        document.SenderName = doc.SenderName;
-                        document.SenderSurname = doc.SenderSurname;
-
-                        document.ReceiverPosition = doc.ReceiverPosition;
-                        document.ReceiverName = doc.ReceiverName;
-                        document.ReceiverSurname = doc.ReceiverSurname;
-
-                        document.ReceiverOrganizationId = doc.ReceiverOrganizationId;
-
-                    }
-
-                    if (doc.DocumentReference != null)
-                    {
-                        var newRef = doc.DocumentReference.Where(o => o.State == "เพิ่ม").ToList();
-                        foreach (var refer in newRef)
+                        int i = 0;
+                        foreach (var attach in doc.DocumentAttachment)
                         {
-                            refer.State = "บันทึก";
-                            document.DocumentReference.Add(refer);
+                            attach.AttachmentBinary = files[i];
+                            attach.FileSize = ConvertBytesToMegabytes(files[i].Length).ToString("N5") + " mb";
+                            attach.State = "บันทึก";
+                            attach.Type = "1";
+                            i++;
                         }
 
-                        var deleteRef = doc.DocumentReference.Where(o => o.State == "รอลบ").ToList();
-                        foreach (var refer in deleteRef)
-                        {
-
-                            var obj = ctx.DocumentReference.Where(o => o.Id == refer.Id).FirstOrDefault();
-                            if (obj != null)
-                            {
-                                ctx.DocumentReference.Remove(obj);
-                            }
-
-                        }
-
-                    }
-
-
-                    var attList = ctx.DocumentAttachment.Where(o => o.DocumentId == document.Id).ToList();
-                    foreach (var att in attList)
-                    {
-                        if (att.State == "รอลบ")
-                        {
-                            ctx.DocumentAttachment.Remove(att);
-                        }
-                    }
-
-
-
-
-                    ctx.SaveChanges();
-                    resp.Status = true;
-                    document.DocumentReference = null;
-                    document.DocumentAttachment = null;
-                    resp.ResponseObject = document;
-                    document.MainAttachmentBinary = null;
-
-
-
-                }
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
-            }
-
-            return resp;
-        }
-
-        public Response EditDocumentAttachment(int id, List<string> fileName, List<byte[]> files)
-        {
-
-            try
-            {
-                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
-                {
-
-
-                    foreach (var file in fileName.Where(o => !o.Contains("mainFile")))
-                    {
-                        var i = 0;
-                        DocumentAttachment att = new DocumentAttachment()
-                        {
-                            DocumentId = id,
-                            AttachmentName = file,
-                            AttachmentBinary = files[i],
-                            MimeCode = ConvertContentType(System.IO.Path.GetExtension(file)),
-                            State = "บันทึก",
-                            Type = "1",
-                            FileSize = ConvertBytesToMegabytes(files[i].Length).ToString("N5") + " mb",
-                        };
-                        ctx.DocumentAttachment.Add(att);
-                        i++;
-                    }
-
-
-                    ctx.SaveChanges();
-                    resp.Status = true;
-
-                }
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
-            }
-
-            return resp;
-        }
-
-        public Response AddDocument(Document doc)
-        {
-
-            try
-            {
-                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
-                {
-                    if (doc.DocumentReference != null)
-                    {
-                        foreach (var item in doc.DocumentReference)
-                        {
-                            item.State = "บันทึก";
-                        }
-                    };
-                    if (ctx.Document.Any(o => o.No == doc.No && o.SenderOrganizationId == doc.SenderOrganizationId && o.ReceiverOrganizationId == doc.ReceiverOrganizationId))
-                    {
-                        resp.Status = false;
-                        resp.Description = "เลขที่หนังสือซ้ำ";
-                    }
-                    else
-                    {
-                        doc.CreatedDate = DateTime.Now;
-                        ctx.Document.Add(doc);
                         ctx.SaveChanges();
                         resp.Status = true;
-                        doc.DocumentAttachment = null;
-                        doc.DocumentReference = null;
-                        resp.ResponseObject = doc;
                     }
-
                 }
             }
             catch (Exception ex)
@@ -890,87 +1157,22 @@ namespace WEB.API.DGA.MIL.DOC.Services
             return resp;
         }
 
-        public Response AddCircleDocument(Document doc)
+        public Response UpdateMainAttachment(int id, byte[] file)
         {
-
             try
             {
                 using (DGAMilDocEntities ctx = new DGAMilDocEntities())
                 {
-                    if (doc.DocumentReference != null)
-                    {
-                        foreach (var item in doc.DocumentReference)
-                        {
-                            item.State = "บันทึก";
-                        }
-                    };
-                    if (ctx.Document.Any(o => o.No == doc.No && o.SenderOrganizationId == doc.SenderOrganizationId && o.ReceiverOrganizationId == doc.ReceiverOrganizationId))
-                    {
-                        resp.Status = false;
-                        resp.Description = "เลขที่หนังสือซ้ำ";
-                    }
-                    else
-                    {
-                        doc.CreatedDate = DateTime.Now;
-                        ctx.Document.Add(doc);
-                        ctx.SaveChanges();
-                        resp.Status = true;                   
-                        resp.ResponseObject = doc;
-                    }
-
-                }
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
-            }
-
-            return resp;
-        }
-
-        public Response AddDocumentIn(DocumentIn docIn)
-        {
-
-            try
-            {
-                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
-                {
-                    var doc = ctx.DocumentIn.Where(o => o.ProcessId == docIn.ProcessId).FirstOrDefault();
-
+                    var doc = ctx.Document.Include("DocumentAttachment").Where(o => o.Id == id).FirstOrDefault();
                     if (doc != null)
                     {
-                        resp.ResponseObject = doc;
-                    }
-                    else
-                    {
-                        if (docIn.DocumentReference != null)
-                        {
-                            foreach (var item in docIn.DocumentReference)
-                            {
-                                item.State = "บันทึก";
-                                item.Type = 2;
-                            }
-                        };
-                        ctx.DocumentIn.Add(docIn);
 
-                        DocumentProcess docProcess = new DocumentProcess()
-                        {
-                            CreatedDate = DateTime.Now,
-                            DocumentInId = docIn.Id,
-                            ProcessId = docIn.ProcessId,
-                            Status = "รับหนังสือรอส่งหนังสือตอบรับ"
-                        };
-
-                        ctx.DocumentProcess.Add(docProcess);
+                        doc.MainAttachmentBinary = file;
+                        doc.FileSize = ConvertBytesToMegabytes(file.Length).ToString("N5") + " mb";
 
                         ctx.SaveChanges();
-                        resp.ResponseObject = docIn;
+                        resp.Status = true;
                     }
-
-                    resp.Status = true;
-                    //resp.Description = "1";
-
                 }
             }
             catch (Exception ex)
@@ -1040,46 +1242,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
 
             return resp;
         }
-
-        public Response SetDocumentAttachment(int id, List<byte[]> files)
-        {
-            try
-            {
-                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
-                {
-                    var doc = ctx.Document.Include("DocumentAttachment").Where(o => o.Id == id).FirstOrDefault();
-                    if (doc != null)
-                    {
-
-                        int i = 0;
-                        foreach (var attach in doc.DocumentAttachment)
-                        {
-                            attach.AttachmentBinary = files[i];
-                            attach.FileSize = ConvertBytesToMegabytes(files[i].Length).ToString("N5") + " mb";
-                            attach.State = "บันทึก";
-                            attach.Type = "1";
-                            i++;
-                        }
-
-                        ctx.SaveChanges();
-                        resp.Status = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
-            }
-
-            return resp;
-        }
-
-        static double ConvertBytesToMegabytes(long bytes)
-        {
-            return (bytes / 1024f) / 1024f;
-        }
-
+               
         public Response DeleteDocumentAttachment(int id)
         {
             try
@@ -1127,21 +1290,47 @@ namespace WEB.API.DGA.MIL.DOC.Services
 
             return resp;
         }
+         
+        public Response AddListOrganization(List<Organization> organizaions)
+        {
+            Response resp = new Response();
+            try
+            {
 
-        public Response SetMainAttachment(int id, byte[] file)
+                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
+                {
+
+                    ctx.Organization.AddRange(organizaions);
+                    ctx.SaveChanges();
+                    resp.Status = true;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Status = false;
+                resp.Description = ex.Message;
+            }
+
+            return resp;
+        }
+     
+        public Response IsAcceptIdDuplicate(string acceptId)
         {
             try
             {
                 using (DGAMilDocEntities ctx = new DGAMilDocEntities())
                 {
-                    var doc = ctx.Document.Include("DocumentAttachment").Where(o => o.Id == id).FirstOrDefault();
+                    var doc = ctx.DocumentIn.Where(o => o.AcceptId == acceptId).FirstOrDefault();
                     if (doc != null)
                     {
-
-                        doc.MainAttachmentBinary = file;
-                        doc.FileSize = ConvertBytesToMegabytes(file.Length).ToString("N5") + " mb";
-
-                        ctx.SaveChanges();
+                        //doc.Organization = ctx.Organization.Where(o => o.Id == doc.SenderOrganizationId).FirstOrDefault();
+                        //doc.Organization1 = ctx.Organization.Where(o => o.Id == doc.ReceiverOrganizationId).FirstOrDefault();
+                        resp.Description = "ลงรับหนังสือซ้า";
+                        resp.Status = false;
+                    }
+                    else
+                    {
                         resp.Status = true;
                     }
                 }
@@ -1155,6 +1344,11 @@ namespace WEB.API.DGA.MIL.DOC.Services
             return resp;
         }
 
+
+        static double ConvertBytesToMegabytes(long bytes)
+        {
+            return (bytes / 1024f) / 1024f;
+        }
 
         public string ConvertContentType(string ext)
         {
@@ -1205,224 +1399,6 @@ namespace WEB.API.DGA.MIL.DOC.Services
             return returnType;
 
         }
-
-        public Response AddListOrganization(List<Organization> organizaions)
-        {
-            Response resp = new Response();
-            try
-            {
-
-                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
-                {
-
-                    ctx.Organization.AddRange(organizaions);
-                    ctx.SaveChanges();
-                    resp.Status = true;
-
-                }
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
-            }
-
-            return resp;
-        }
-
-        public Response GetOrganizationByCode(string Code)
-        {
-            Response resp = new Response();
-            try
-            {
-
-                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
-                {
-
-                    var obj = ctx.Organization.Where(o => o.Code == Code).FirstOrDefault();
-                    if (obj != null)
-                    {
-                        resp.ResponseObject = obj;
-                    }
-
-                    resp.Status = true;
-
-                }
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
-            }
-
-            return resp;
-        }
-
-        public Response GetOrganizationById(int id)
-        {
-            Response resp = new Response();
-            try
-            {
-
-                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
-                {
-
-                    var obj = ctx.Organization.Where(o => o.Id == id).FirstOrDefault();
-                    if (obj != null)
-                    {
-                        resp.ResponseObject = obj;
-                    }
-
-                    resp.Status = true;
-
-                }
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
-            }
-
-            return resp;
-        }
-
-
-        public Response IsAcceptIdDuplicate(string acceptId)
-        {
-            try
-            {
-                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
-                {
-                    var doc = ctx.DocumentIn.Where(o => o.AcceptId == acceptId).FirstOrDefault();
-                    if (doc != null)
-                    {
-                        //doc.Organization = ctx.Organization.Where(o => o.Id == doc.SenderOrganizationId).FirstOrDefault();
-                        //doc.Organization1 = ctx.Organization.Where(o => o.Id == doc.ReceiverOrganizationId).FirstOrDefault();
-                        resp.Description = "ลงรับหนังสือซ้า";
-                        resp.Status = false;
-                    }
-                    else
-                    {
-                        resp.Status = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
-            }
-
-            return resp;
-        }
-
-        public Response GetDocumentInWithAtt(int id)
-        {
-            try
-            {
-                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
-                {
-                    var doc = ctx.DocumentIn
-                        .Include("DocumentAttachment")
-                        .Include("DocumentReference")
-                        .Include("Organization")
-                        .Include("Organization1").Where(o => o.Id == id).FirstOrDefault();
-                    if (doc != null)
-                    {
-                        //doc.Organization = ctx.Organization.Where(o => o.Id == doc.SenderOrganizationId).FirstOrDefault();
-                        //doc.Organization1 = ctx.Organization.Where(o => o.Id == doc.ReceiverOrganizationId).FirstOrDefault();
-                        resp.ResponseObject = doc;
-                        resp.Status = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
-            }
-
-            return resp;
-        }
-
-        public Response GetOtherAttachmentById(int id)
-        {
-            try
-            {
-                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
-                {
-                    var att = ctx.DocumentAttachment.Where(o => o.Id == id).FirstOrDefault();
-
-                    if (att != null)
-                    {
-                        resp.ResponseObject = att;
-                        resp.Status = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
-            }
-
-            return resp;
-        }
-        public Response GetMainAttachmentById(int id)
-        {
-            try
-            {
-                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
-                {
-                    var docIn = ctx.DocumentIn.Where(o => o.Id == id).FirstOrDefault();
-
-                    if (docIn != null)
-                    {
-
-                        resp.ResponseObject = docIn;
-                        resp.Status = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
-            }
-
-            return resp;
-        }
-
-        public Response GetOrganization()
-        {
-            Response resp = new Response();
-            try
-            {
-
-                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
-                {
-
-                    var obj = ctx.Organization.ToList();
-                    if (obj != null)
-                    {
-                        StaticOrganization.organizations = obj;
-                    }
-
-                    resp.Status = true;
-
-                }
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
-            }
-
-            return resp;
-
-
-        }
-
 
     }
 }
