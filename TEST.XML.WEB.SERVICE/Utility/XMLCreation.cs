@@ -90,7 +90,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
               .AddAfterSelf(attachment);
             }
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //ส่งหนังสือตอบรับ
         public static string RequestReceiveLetterNotifier(RequestReceiveLetterNotifier source)
@@ -113,7 +113,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                             new XElement("Subject", source.Subject ?? "")
                             ))));
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //ส่งหนังสือแจ้งเลขรับ
         public static string RequestAcceptLetterNotifier(RequestAcceptLetterNotifier source)
@@ -137,7 +137,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                             new XElement("Subject", source.Subject ?? "")
                             ))));
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //ส่งหนังสือปฏิเสธ
         public static string RequestRejectLetterNotifier(RequestRejectLetterNotifier source)
@@ -160,7 +160,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                             new XElement("Subject", source.Subject ?? "")
                             ))));
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //ส่งหนังสือแจ้งหนังสือผิด
         public static string RequestInvalidLetterNotifier(RequestInvalidLetterNotifier source)
@@ -182,7 +182,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                             new XElement("CorrespondenceDate", source.CorrespondenceData ?? ""),
                             new XElement("Subject", source.Subject ?? "")
                             ))));
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //ส่งหนังสือแจ้งเลขรับผิด
         public static string RequestInvalidAcceptIDNotifier(RequestInvalidAcceptIDNotifier source)
@@ -205,7 +205,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                             new XElement("CorrespondenceDate", source.CorrespondenceData ?? ""),
                             new XElement("Subject", source.Subject ?? "")
                             ))));
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
 
         //การรับหนังสือภายนอก,การรับหนังสือตอบรับ,การรับหนังสือแจ้งเลขรับ,การรับหนังสือปฏิเสธ,การรับหนังสือแจ้งหนังสือผิด,การรับหนังสือแจ้งเลขรับผิด
@@ -224,7 +224,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                 new XElement(soap + "Body",
                     new XElement("CorrespondenceLetterInboundRequest")));
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //การขอลบหนังสือภายนอกเพื่อจะส่งหนังสือใหม่ (กรณีได้รับหนังสือปฏิเสธหรือแจ้งหนังสือผิด)
         public static string RequestDeleteGovernmentDocument(RequestDeleteGovernmentDocument source)
@@ -248,7 +248,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                         new XElement("AcceptDepartment",
                             new XElement("Code", source.AcceptDepartment ?? "")))));
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //การขอลบหนังสือออกจากคิว 
         public static string RequestDeleteDocumentQueue(RequestDeleteQueue source)
@@ -264,7 +264,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                     new XElement("CorrespondenceLetterDeleteRequest",
                         new XElement("ProcessID", source.ProcessID ?? ""))));
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //การขอรหัสกระทรวง
         public static string RequestGetMinistry(RequestReceive source)
@@ -284,7 +284,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
 
 
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //การขอข้อมูลหน่วยงาน
         public static string RequestGetOrganizationList(RequestReceive source)
@@ -302,7 +302,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                 new XElement(soap + "Body",
                     new XElement("GetOrganizationList")));
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //การขอรหัสชั้นความลับ
         public static string RequestGetSecretCodes(RequestReceive source)
@@ -318,7 +318,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                 new XElement(soap + "Body",
                     new XElement("GetSecretCodes")));
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //การขอรหัสชั้นความเร็ว
         public static string RequestGetSpeedCodes(RequestReceive source)
@@ -334,7 +334,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                 new XElement(soap + "Body",
                     new XElement("GetSpeedCodes")));
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //การขอรหัสประเภทไฟล์
         public static string RequestGetMimeCodes(RequestReceive source)
@@ -350,7 +350,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                 new XElement(soap + "Body",
                     new XElement("GetMimeCodes")));
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //การสอบถามสถานะส่งหนังสือ
         public static string RequestGetStatus(RequestReceive source)
@@ -366,7 +366,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                 new XElement(soap + "Body",
                     new XElement("OutboundStatusRequest")));
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //การตรวจสอบเวลา
         public static string RequestTimeCheck(RequestReceive source)
@@ -382,7 +382,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                 new XElement(soap + "Body",
                     new XElement("TimeCheckRequest")));
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //การขอหนังสือภายนอกใหม
         public static string RequestGetNewDocument(RequestNewDocument source)
@@ -407,7 +407,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                         new XElement("AcceptDepartment",
                             new XElement("Code", source.AcceptDepartment ?? ""))))));
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //การขอหนังสือตอบรับใหม่
         public static string RequestGetNewAcceptLetter(RequestNewDocument source)
@@ -432,7 +432,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                         new XElement("AcceptDepartment",
                             new XElement("Code", source.AcceptDepartment ?? ""))))));
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //การขอหนังสือแจ้งเลขรับใหม่
         public static string RequestGetNewAcceptLetterNotifier(RequestNewDocument source)
@@ -457,7 +457,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                         new XElement("AcceptDepartment",
                             new XElement("Code", source.AcceptDepartment ?? ""))))));
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //การขอหนังสือปฏิเสธใหม่
         public static string RequestRejectLetterNotifier(RequestNewDocument source)
@@ -482,7 +482,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                         new XElement("AcceptDepartment",
                             new XElement("Code", source.AcceptDepartment ?? ""))))));
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //การขอหนังสือแจ้งหนังสือผิดใหม่
         public static string RequestInvalidLetterNotifier(RequestNewDocument source)
@@ -507,7 +507,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                         new XElement("AcceptDepartment",
                             new XElement("Code", source.AcceptDepartment ?? ""))))));
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
         //การขอหนังสือแจ้งเลขรับผิดใหม
         public static string RequestInvalidAcceptIDNotifier(RequestNewDocument source)
@@ -532,25 +532,10 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                         new XElement("AcceptDepartment",
                             new XElement("Code", source.AcceptDepartment ?? ""))))));
 
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
 
-        public static string ConvertXmlFormat(XElement xml)
-        {
-
-
-            XDocument doc = new XDocument(new XDeclaration("1.0", "utf-8", "no"), xml); 
-            
-            string text = xml.ToString().Replace("\r\n", "");
-            int space = 50;
-            for (int i = 1; i <= space; i++)
-            {
-                string s = (" ").PadLeft(i, ' ');
-                string tag = ">" + s + "<";
-                text = text.Replace(tag, "><");
-            }
-            return text;
-        }
+      
         public static string SendDocRejectWrongLetterNotifier()
         {
             XNamespace soap = "http://schemas.xmlsoap.org/soap/envelope/";
@@ -576,7 +561,7 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                             new XElement("AcceptDepartment",
                                 new XElement("Code", null ?? ""))
                             ))));
-            return ConvertXmlFormat(soapElement);
+            return Util.ConvertXmlFormat(soapElement);
         }
 
     }

@@ -25,10 +25,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
     {
         public RequestErrorResponse errorResponse = null;
         DocumentServices docService = new DocumentServices();
-
    
-
-
         //ส่งหนังสือ
         [HttpPost]
         public JsonResult RequestSendDocument(int id)
@@ -38,15 +35,15 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             try
             {
 
-                var docResponse = docService.GetdocumentWithAtt(id);
+                var docResponse = docService.GetDocumentWithChild(id);
 
                 if (docResponse.Status)
                 {
                     var processID = string.Empty;
-                    var document = (Document)docResponse.ResponseObject;
+                    var document = (Document)docResponse.ResultData;
                     byte[] pdfBytes = document.MainAttachmentBinary;
                     string pdfBase64 = Convert.ToBase64String(pdfBytes);
-                    var receive = docService.GetOrganizationById(document.ReceiverOrganizationId).ResponseObject;
+                    var receive = docService.GetOrganizationById(document.ReceiverOrganizationId).ResultData;
 
                     RequestSendDocOut source = new RequestSendDocOut()
                     {
@@ -70,7 +67,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                         Attachment = "-",
                         SendDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss",new CultureInfo("en-US")),
                         Description = document.Description,
-                        MainLetterBinaryObjectMimeCode = ConvertContentType(Path.GetExtension(document.MainAttachmentName)),
+                        MainLetterBinaryObjectMimeCode = Util.ConvertContentType(Path.GetExtension(document.MainAttachmentName)),
                         MainLetterBinaryObject = pdfBase64,
                         References = new List<Reference>(),
                         Attachments = new List<Attachment>(),
@@ -109,7 +106,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             Attachment attachment = new Attachment()
                             {
                                 AttachmentBinaryObject = Convert.ToBase64String(att.AttachmentBinary),
-                                AttachmentBinaryObjectMimeCode = ConvertContentType(Path.GetExtension(att.AttachmentName)),
+                                AttachmentBinaryObjectMimeCode = Util.ConvertContentType(Path.GetExtension(att.AttachmentName)),
 
                             };
                             source.Attachments.Add(attachment);
@@ -137,8 +134,8 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                 ErrorDescription = error[i].ChildNodes[1].InnerXml,
                             };
 
-                            resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
-                            resp.ResponseObject = errorDetail;
+                            resp.Message = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
+                            resp.ResultData = errorDetail;
 
                         }
 
@@ -153,14 +150,15 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                         }
 
                         resp = docService.UpdateDocumentStatus(id, processID, "ส่งหนังสือรอตอบรับ");
-                        resp.ResponseObject = null;
+                        resp.ResultData = null;
                     }
                 }
             }
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
            
             return Json(resp, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet);
@@ -219,11 +217,11 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                     var acceptDept = xmlDoc.GetElementsByTagName("Code")[0].InnerXml;
                     var resp = docService.UpdateDocumentInvalidAcceptId(document,acceptDept);
 
-                    if (resp.Status && resp.ResponseObject != 0)
+                    if (resp.Status && resp.ResultData != 0)
                     {
                         RequestDeleteQueue delSource = new RequestDeleteQueue()
                         {
-                            MessageID = resp.ResponseObject.ToString(),
+                            MessageID = resp.ResultData.ToString(),
                             ProcessID = document.ProcessId,
                             To = to,
                         };
@@ -301,10 +299,10 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                     var department = xmlDoc.GetElementsByTagName("ram:DepartmentOrganization");
                     if (department.Count > 0)
                     {
-                        var obj = (WEB.API.DGA.MIL.DOC.DataAccesLayer.Organization)docService.GetOrganizationByCode(department[0].ChildNodes[0].InnerXml).ResponseObject;
+                        var obj = (WEB.API.DGA.MIL.DOC.DataAccesLayer.Organization)docService.GetOrganizationByCode(department[0].ChildNodes[0].InnerXml).ResultData;
                         docIn.SenderOrganizationId = obj.Id;
 
-                        var obj2 = (WEB.API.DGA.MIL.DOC.DataAccesLayer.Organization)docService.GetOrganizationByCode(department[1].ChildNodes[0].InnerXml).ResponseObject;
+                        var obj2 = (WEB.API.DGA.MIL.DOC.DataAccesLayer.Organization)docService.GetOrganizationByCode(department[1].ChildNodes[0].InnerXml).ResultData;
                         docIn.ReceiverOrganizationId = obj2.Id;
                     }
 
@@ -355,8 +353,8 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                         docIn.MimeCode = mainAttachment[0].Attributes[0].InnerText;
                         byte[] bytes = System.Convert.FromBase64String(mainAttachment[0].InnerXml.Trim());
                         docIn.MainAttachmentBinary = bytes;
-                        docIn.MainAttachmentName = "เอกสารหลัก" + ConvertExtensionType(mainAttachment[0].Attributes[0].InnerText);
-                        docIn.FileSize = ConvertBytesToMegabytes(bytes.Length).ToString("N5") + " mb";
+                        docIn.MainAttachmentName = "เอกสารหลัก" + Util.ConvertExtensionType(mainAttachment[0].Attributes[0].InnerText);
+                        docIn.FileSize = Util.ConvertBytesToMegabytes(bytes.Length).ToString("N5") + " mb";
                     }
 
                     var attachmentBinaryObject = xmlDoc.GetElementsByTagName("ram:AttachmentBinaryObject");
@@ -372,8 +370,8 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                 State = "บันทึก",
                                 Type = "2",
                                 MimeCode = attachmentBinaryObject[i].Attributes[0].InnerText,
-                                AttachmentName = "เอกสารแนบ" + (i + 1) + "" + ConvertExtensionType(attachmentBinaryObject[i].Attributes[0].InnerText),
-                                FileSize = ConvertBytesToMegabytes(System.Convert.FromBase64String(attachmentBinaryObject[i].InnerXml.Trim()).Length).ToString("N5") + " mb"
+                                AttachmentName = "เอกสารแนบ" + (i + 1) + "" + Util.ConvertExtensionType(attachmentBinaryObject[i].Attributes[0].InnerText),
+                                FileSize = Util.ConvertBytesToMegabytes(System.Convert.FromBase64String(attachmentBinaryObject[i].InnerXml.Trim()).Length).ToString("N5") + " mb"
                             };
                             if (att.AttachmentBinary.Length == 0)
                             {
@@ -391,12 +389,12 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                     docIn.Status = "รอส่งหนังสือตอบรับ";
                     var resp = docService.AddDocumentIn(docIn);
 
-                    if (resp.Status && resp.ResponseObject != null)
+                    if (resp.Status && resp.ResultData != null)
                     {
                         RequestDeleteQueue delSource = new RequestDeleteQueue()
                         {
-                            MessageID = resp.ResponseObject.Id.ToString(),
-                            ProcessID = resp.ResponseObject.ProcessId,
+                            MessageID = resp.ResultData.Id.ToString(),
+                            ProcessID = resp.ResultData.ProcessId,
                             To = to,
                         };
 
@@ -409,12 +407,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
 
             return Content("");
         }
-
-        static double ConvertBytesToMegabytes(long bytes)
-        {
-            return (bytes / 1024f) / 1024f;
-        }
-
+       
         //ส่งหนังสือตอบรับ
         [HttpPost]
         public JsonResult RequestSendNotifierDocument(int id)
@@ -422,10 +415,10 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             var resp = new Response();
             try
             {
-                resp = docService.GetDocumentInWithAtt(Convert.ToInt32(id));
+                resp = docService.GetDocumentInWithChild(Convert.ToInt32(id));
                 if (resp.Status)
                 {
-                    DocumentIn document = resp.ResponseObject;
+                    DocumentIn document = resp.ResultData;
                     RequestReceiveLetterNotifier source = new RequestReceiveLetterNotifier()
                     {
                         CorrespondenceDate = document.Date,
@@ -453,8 +446,8 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             };
                             
                             resp.Status = false;
-                            resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
-                            resp.ResponseObject = errorDetail;
+                            resp.Message = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
+                            resp.ResultData = errorDetail;
                         }
                     }
                     else
@@ -471,12 +464,14 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
 
                     }
                 }
-                resp.ResponseObject = null;
+                resp.ResultData = null;
             }
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
+
             }
 
             return Json(resp, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet);
@@ -493,11 +488,11 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                 resp = docService.IsAcceptIdDuplicate(acceptId);
                 if (resp.Status)
                 {
-                    resp = docService.GetDocumentInWithAtt(id);
+                    resp = docService.GetDocumentInWithChild(id);
                     if (resp.Status)
                     {
 
-                        DocumentIn document = resp.ResponseObject;
+                        DocumentIn document = resp.ResultData;
 
                         RequestAcceptLetterNotifier source = new RequestAcceptLetterNotifier()
                         {
@@ -528,8 +523,8 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                 };
 
                                 resp.Status = false;
-                                resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
-                                resp.ResponseObject = errorDetail;
+                                resp.Message = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
+                                resp.ResultData = errorDetail;
                             }
 
                             resp.Status = false;
@@ -557,9 +552,10 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
-            resp.ResponseObject = null;
+            resp.ResultData = null;
             return Json(resp, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet);
         }
 
@@ -570,10 +566,10 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             var resp = new Response();
             try
             {
-                resp = docService.GetDocumentInWithAtt(id);
+                resp = docService.GetDocumentInWithChild(id);
                 if (resp.Status)
                 {
-                    DocumentIn document = resp.ResponseObject;
+                    DocumentIn document = resp.ResultData;
                     RequestRejectLetterNotifier source = new RequestRejectLetterNotifier()
                     {
                         CorrespondenceData = document.Date,
@@ -601,8 +597,8 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             };
 
                             resp.Status = false;
-                            resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
-                            resp.ResponseObject = errorDetail;
+                            resp.Message = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
+                            resp.ResultData = errorDetail;
                         }
                         
                        
@@ -624,9 +620,10 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
-            resp.ResponseObject = null;
+            resp.ResultData = null;
             return Json(resp, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet);
         }
 
@@ -634,12 +631,12 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
         [HttpPost]
         public JsonResult RequestInvalidLetterNotifier(int id)
         {
-            var resp = docService.GetDocumentInWithAtt(id);
+            var resp = docService.GetDocumentInWithChild(id);
             try
             {
                 if (resp.Status)
                 {
-                    DocumentIn document = resp.ResponseObject;
+                    DocumentIn document = resp.ResultData;
                     RequestInvalidLetterNotifier source = new RequestInvalidLetterNotifier()
                     {
                         CorrespondenceData = document.Date,
@@ -666,8 +663,8 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                 ErrorCode = error[i].ChildNodes[0].InnerXml,
                                 ErrorDescription = error[i].ChildNodes[1].InnerXml,
                             };                            
-                            resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
-                            resp.ResponseObject = errorDetail;
+                            resp.Message = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
+                            resp.ResultData = errorDetail;
                         }
                        
                         resp.Status = false;
@@ -686,9 +683,10 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
-            resp.ResponseObject = null;
+            resp.ResultData = null;
             return Json(resp, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet);
         }
 
@@ -700,11 +698,11 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             var resp = new Response();
             try
             {
-                resp = docService.GetdocumentWithAtt(id);
+                resp = docService.GetDocumentWithChild(id);
                 if (resp.Status)
                 {
 
-                    Document document = resp.ResponseObject;
+                    Document document = resp.ResultData;
                     RequestInvalidAcceptIDNotifier source = new RequestInvalidAcceptIDNotifier()
                     {
                         CorrespondenceData = document.Date,
@@ -734,7 +732,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                 ErrorDescription = error[i].ChildNodes[1].InnerXml,
                             };
                            
-                            resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
+                            resp.Message = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
                         }
                       
                         resp.Status = false;
@@ -752,12 +750,13 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                     }
 
                 }
-                resp.ResponseObject = null;
+                resp.ResultData = null;
             }
             catch (Exception ex)
             {
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
                 resp.Status = false;
+                resp.Exception = ex.ToString();
             }
 
             return Json(resp, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet);
@@ -798,7 +797,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             ErrorDescription = error[i].ChildNodes[1].InnerXml,
                         };
 
-                        resp.Description = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
+                        resp.Message = error[i].ChildNodes[1].InnerXml + Environment.NewLine;
                     }
                   
                     resp.Status = false;
@@ -819,7 +818,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
 
                     if (iva.Count > 0)
                     {
-                        resp.Description = "พบแจ้งหนังสือแจ้งเลขรับผิด";
+                        resp.Message = "พบแจ้งหนังสือแจ้งเลขรับผิด";
                         if (pID.Count > 0)
                         {
                             Document document = new Document()
@@ -835,19 +834,19 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             var acceptDept = doc.GetElementsByTagName("Code")[0].InnerXml;
                             resp = docService.UpdateDocumentInvalidAcceptId(document, acceptDept);
 
-                            if (resp.Status && resp.ResponseObject != 0)
+                            if (resp.Status && resp.ResultData != 0)
                             {
                                 RequestDeleteQueue delSource = new RequestDeleteQueue()
                                 {
-                                    MessageID = resp.ResponseObject.ToString(),
+                                    MessageID = resp.ResultData.ToString(),
                                     ProcessID = document.ProcessId,
                                     To = to,
                                 };
 
                                 var delXml = XMLCreation.RequestDeleteDocumentQueue(delSource);
                                 var delResp = postXMLData(to, delXml);
-                                var docId = (int)resp.ResponseObject;
-                                Document docSource = (Document)(docService.GetdocumentWithAtt(docId).ResponseObject);
+                                var docId = (int)resp.ResultData;
+                                Document docSource = (Document)(docService.GetDocumentWithChild(docId).ResultData);
                                 RequestDeleteGovernmentDocument delDocSource = new RequestDeleteGovernmentDocument()
                                 {
                                     AcceptDepartment = docSource.Organization1.Code,
@@ -865,7 +864,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                     }
                     else if (aId.Count > 0)
                     {
-                        resp.Description = "พบหนังสือแจ้งเลขรับ";
+                        resp.Message = "พบหนังสือแจ้งเลขรับ";
                         if (pID.Count > 0)
                         {
                             Document document = new Document()
@@ -881,11 +880,11 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             var acceptDept = doc.GetElementsByTagName("Code")[0].InnerXml;
                             resp = docService.UpdateDocumentAcceptId(document, acceptId, acceptDept);
 
-                            if (resp.Status && resp.ResponseObject != 0)
+                            if (resp.Status && resp.ResultData != 0)
                             {
                                 RequestDeleteQueue delSource = new RequestDeleteQueue()
                                 {
-                                    MessageID = resp.RequestObject.ToString(),
+                                    MessageID = resp.ResultData.ToString(),
                                     ProcessID = document.ProcessId,
                                     To = to,
                                 };
@@ -898,7 +897,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                     }
                     else if (rj.Count > 0)
                     {
-                        resp.Description = "พบหนังสือปฏิเสธ";
+                        resp.Message = "พบหนังสือปฏิเสธ";
                         if (pID.Count > 0)
                         {
                             Document document = new Document()
@@ -914,19 +913,19 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             var acceptDept = doc.GetElementsByTagName("Code")[0].InnerXml;
                             resp = docService.UpdateDocumentReject(document,acceptDept);
 
-                            if (resp.Status && resp.ResponseObject != 0)
+                            if (resp.Status && resp.ResultData != 0)
                             {
                                 RequestDeleteQueue delSource = new RequestDeleteQueue()
                                 {
-                                    MessageID = resp.ResponseObject.ToString(),
+                                    MessageID = resp.ResultData.ToString(),
                                     ProcessID = document.ProcessId,
                                     To = to,
                                 };
 
                                 var delXml = XMLCreation.RequestDeleteDocumentQueue(delSource);
                                 var delResp = postXMLData(to, delXml);
-                                var docId = (int)resp.ResponseObject;
-                                Document docSource = (Document)(docService.GetdocumentWithAtt(docId).ResponseObject);
+                                var docId = (int)resp.ResultData;
+                                Document docSource = (Document)(docService.GetDocumentWithChild(docId).ResultData);
                                 RequestDeleteGovernmentDocument delDocSource = new RequestDeleteGovernmentDocument()
                                 {
                                     AcceptDepartment = docSource.Organization1.Code,
@@ -945,7 +944,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                     }
                     else if (iv.Count > 0)
                     {
-                        resp.Description = "พบแจ้งหนังสือผิด";
+                        resp.Message = "พบแจ้งหนังสือผิด";
                         if (pID.Count > 0)
                         {
                             Document document = new Document()
@@ -961,19 +960,19 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             var acceptDept = doc.GetElementsByTagName("Code")[0].InnerXml;
                             resp = docService.UpdateDocumentInvalid(document, acceptDept);
 
-                            if (resp.Status && resp.ResponseObject != 0)
+                            if (resp.Status && resp.ResultData != 0)
                             {
                                 RequestDeleteQueue delSource = new RequestDeleteQueue()
                                 {
-                                    MessageID = resp.ResponseObject.ToString(),
+                                    MessageID = resp.ResultData.ToString(),
                                     ProcessID = document.ProcessId,
                                     To = to,
                                 };
 
                                 var delXml = XMLCreation.RequestDeleteDocumentQueue(delSource);
                                 var delResp = postXMLData(to, delXml);
-                                var docId = (int)resp.ResponseObject;
-                                Document docSource = (Document)(docService.GetdocumentWithAtt(docId).ResponseObject);
+                                var docId = (int)resp.ResultData;
+                                Document docSource = (Document)(docService.GetDocumentWithChild(docId).ResultData);
                                 RequestDeleteGovernmentDocument delDocSource = new RequestDeleteGovernmentDocument()
                                 {
                                     AcceptDepartment = docSource.Organization1.Code,
@@ -995,7 +994,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                         //ACCept ID
                       
                         
-                        resp.Description = "พบหนังสือตอบกลับ";
+                        resp.Message = "พบหนังสือตอบกลับ";
                         if (pID.Count > 0)
                         {
                             Document document = new Document()
@@ -1009,11 +1008,11 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             var acceptDept = doc.GetElementsByTagName("Code")[0].InnerXml;
                             resp = docService.UpdateDocumentReceiveNotifier(document, acceptDept);
 
-                            if (resp.Status && resp.ResponseObject != 0)
+                            if (resp.Status && resp.ResultData != 0)
                             {
                                 RequestDeleteQueue delSource = new RequestDeleteQueue()
                                 {
-                                    MessageID = resp.RequestObject.ToString(),
+                                    MessageID = resp.ResultData.ToString(),
                                     ProcessID = document.ProcessId,
                                     To = to,
                                 };
@@ -1029,12 +1028,13 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                     //resp.Description = "ไม่พบหนังสือ";
 
                 }
-                resp.ResponseObject = null;
+                resp.ResultData = null;
             }
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return Json(resp, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet);
@@ -1047,10 +1047,10 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             var resp = new Response();
             try
             {
-                resp = docService.GetDocumentInWithAtt(id);
+                resp = docService.GetDocumentInWithChild(id);
                 if (resp.Status)
                 {
-                    DocumentIn document = resp.ResponseObject;
+                    DocumentIn document = resp.ResultData;
                     RequestDeleteQueue source = new RequestDeleteQueue()
                     {
                         MessageID = document.Id.ToString(),
@@ -1062,12 +1062,13 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                     var response = postXMLData(document.Organization1.Url, xml);
 
                 }
-                resp.ResponseObject = null;
+                resp.ResultData = null;
             }
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return Json(resp, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet);
@@ -1095,112 +1096,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
 
         }
 
-        public string ConvertExtensionType(string ext)
-        {
-            string returnType = "";
-            switch (ext)
-            {
-                case "application/msword":
-                    returnType = ".doc";
-                    break;
-                case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-                    returnType = ".docx";
-                    break;
-                case "application/pdf":
-                    returnType = ".pdf";
-                    break;
-                case "application/rtf":
-                    returnType = ".rtf";
-                    break;
-                case "application/vnd.ms-excel":
-                    returnType = ".xls";
-                    break;
-                case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-                    returnType = ".xlsx";
-                    break;
-                case "application/zip":
-                    returnType = ".zip";
-                    break;
-                case "image/bmp":
-                    returnType = ".bmp";
-                    break;
-                case "image/jpeg":
-                    returnType = ".jpg";
-                    break;
-                case "image/png":
-                    returnType = ".png";
-                    break;
-                case "image/tiff":
-                    returnType = ".tiff";
-                    break;
-                case "text/plain":
-                    returnType = ".txt";
-                    break;
-                case "application/vnd.ms-powerpoint":
-                    returnType = ".ppt";
-                    break;
-                case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-                    returnType = ".pptx";
-                    break;
-            }
-
-            return returnType;
-
-        }
-
-        public string ConvertContentType(string ext)
-        {
-            ext = ext.ToLower();
-            string returnType = "";
-            switch (ext)
-            {
-                case ".doc":
-                    returnType = "application/msword";
-                    break;
-                case ".docx":
-                    returnType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-                    break;
-                case ".pdf":
-                    returnType = "application/pdf";
-                    break;
-                case ".rtf":
-                    returnType = "application/rtf";
-                    break;
-                case ".xls":
-                    returnType = "application/vnd.ms-excel";
-                    break;
-                case ".xlsx":
-                    returnType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                    break;
-                case ".zip":
-                    returnType = "application/zip";
-                    break;
-                case ".bmp":
-                    returnType = "image/bmp";
-                    break;
-                case ".png":
-                    returnType = "image/png";
-                    break;
-                case ".jpg":
-                    returnType = "image/jpeg";
-                    break;
-                case ".tiff":
-                    returnType = "image/tiff";
-                    break;
-                case ".txt":
-                    returnType = "text/plain";
-                    break;
-                case ".ppt":
-                    returnType = "application/vnd.ms-powerpoint";
-                    break;
-                case ".pptx":
-                    returnType = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-                    break;
-            }
-
-            return returnType;
-
-        }
+       
 
         public ActionResult RequestReceiveDocumentLetterDelete(string delfrom)
         {
@@ -1325,7 +1221,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                 RequestReceive source = new RequestReceive()
                 {
                     MessageID = "Test",
-                    To = resp.ResponseObject.Url
+                    To = resp.ResultData.Url
                 };
                 var xml = XMLCreation.RequestGetMinistry(source);
                 var response = postXMLData(source.To, xml);
@@ -1395,7 +1291,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                 RequestReceive source = new RequestReceive()
                 {
                     MessageID = "Test",
-                    To = resp.ResponseObject.Url
+                    To = resp.ResultData.Url
                 };
                 var xml = XMLCreation.RequestGetOrganizationList(source);
                 var response = postXMLData(source.To, xml);
@@ -1530,7 +1426,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                 RequestReceive source = new RequestReceive()
                 {
                     MessageID = "Test",
-                    To = resp.ResponseObject.Url
+                    To = resp.ResultData.Url
                 };
                 var xml = XMLCreation.RequestGetSecretCodes(source);
                 var response = postXMLData(source.To, xml);
@@ -1596,7 +1492,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                 RequestReceive source = new RequestReceive()
                 {
                     MessageID = "Test",
-                    To = resp.ResponseObject.Url
+                    To = resp.ResultData.Url
                 };
                 var xml = XMLCreation.RequestGetSpeedCodes(source);
                 var response = postXMLData(source.To, xml);

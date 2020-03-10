@@ -12,40 +12,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
     {
         public Response resp = new Response();
         
-        public Response GetSpeedIDByCode(string code)
-        {
-            var speedID = 0;
-            try
-            {
-
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
-            }
-
-            return resp;
-
-        }
-        
-        public Response GetSecretIDbyCode(string code)
-        {
-            var secretID = 0;
-            try
-            {
-
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
-            }
-
-            return resp;
-
-        }
-        
+                       
         public Response Getdocument(int id)
         {
             try
@@ -69,7 +36,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         {
                             reference.Document = null;
                         }
-                        //doc.Organization1 = ctx.Organization.Where(o => o.Id == doc.ReceiverOrganizationId).FirstOrDefault();
+                        
                         doc.Organization.DocumentIn = null;
                         doc.Organization.Document1 = null;
                         doc.Organization.DocumentIn1 = null;
@@ -78,7 +45,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         doc.Organization1.Document1 = null;
                         doc.Organization1.DocumentIn1 = null;
                         doc.Organization1.Document = null;
-                        resp.ResponseObject = doc;
+                     
+                        resp.ResultData = doc;
                         resp.Status = true;
                     }
                 }
@@ -86,13 +54,14 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return resp;
         }
 
-        public Response GetdocumentWithAtt(int id)
+        public Response GetDocumentWithChild(int id)
         {
             try
             {
@@ -106,7 +75,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                     if (doc != null)
                     {
 
-                        resp.ResponseObject = doc;
+                        resp.ResultData = doc;
                         resp.Status = true;
                     }
                 }
@@ -114,7 +83,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return resp;
@@ -157,7 +127,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         doc.Organization1.DocumentIn1 = null;
                         doc.Organization1.Document = null;
 
-                        resp.ResponseObject = doc;
+                        resp.ResultData = doc;
                         resp.Status = true;
                     }
                 }
@@ -165,13 +135,14 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return resp;
         }
 
-        public Response GetDocumentInWithAtt(int id)
+        public Response GetDocumentInWithChild(int id)
         {
             try
             {
@@ -186,7 +157,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                     {
                         //doc.Organization = ctx.Organization.Where(o => o.Id == doc.SenderOrganizationId).FirstOrDefault();
                         //doc.Organization1 = ctx.Organization.Where(o => o.Id == doc.ReceiverOrganizationId).FirstOrDefault();
-                        resp.ResponseObject = doc;
+                        resp.ResultData = doc;
                         resp.Status = true;
                     }
                 }
@@ -194,7 +165,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return resp;
@@ -220,7 +192,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                     }).OrderByDescending(o => o.Id).ToList();
                     if (doc != null)
                     {
-                        resp.ResponseObject = doc;
+                        resp.ResultData = doc;
                         resp.Status = true;
                     }
                 }
@@ -228,13 +200,14 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return resp;
         }
 
-        public Response GetDocumentListByOrganizeId(int organizationId)
+        public Response GetDocumentListByOrganizationId(int organizationId)
         {
             try
             {
@@ -254,7 +227,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                     }).OrderByDescending(o => o.Id).ToList();
                     if (doc != null)
                     {
-                        resp.ResponseObject = doc;
+                        resp.ResultData = doc;
                         resp.Status = true;
                     }
                 }
@@ -262,7 +235,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return resp;
@@ -286,7 +260,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                     }).OrderByDescending(o => o.Id).ToList();
                     if (doc != null)
                     {
-                        resp.ResponseObject = doc;
+                        resp.ResultData = doc;
                         resp.Status = true;
                     }
                 }
@@ -294,13 +268,14 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return resp;
         }
 
-        public Response GetDocumentInListByOrganizeId(int organizationId)
+        public Response GetDocumentInListByOrganizationId(int organizationId)
         {
             try
             {
@@ -319,7 +294,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
 
                     if (doc != null)
                     {
-                        resp.ResponseObject = doc;
+                        resp.ResultData = doc;
                         resp.Status = true;
                     }
                 }
@@ -327,7 +302,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return resp;
@@ -343,7 +319,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                     var organizations = ctx.Organization.OrderByDescending(o => o.Name).ToList();
                     if (organizations != null)
                     {
-                        resp.ResponseObject = organizations;
+                        resp.ResultData = organizations;
                         resp.Status = true;
                     }
                 }
@@ -351,8 +327,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
-                resp.ResponseObject = ex.ToString();
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return resp;
@@ -368,7 +344,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
 
                     if (att != null)
                     {
-                        resp.ResponseObject = att;
+                        resp.ResultData = att;
                         resp.Status = true;
                     }
                 }
@@ -376,7 +352,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
             }
 
             return resp;
@@ -393,7 +369,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                     if (docIn != null)
                     {
 
-                        resp.ResponseObject = docIn;
+                        resp.ResultData = docIn;
                         resp.Status = true;
                     }
                 }
@@ -401,65 +377,32 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
             }
 
             return resp;
         }
-
-        public Response GetOrganization()
+      
+        public Response GetOrganizationByCode(string code)
         {
             Response resp = new Response();
             try
             {
-
                 using (DGAMilDocEntities ctx = new DGAMilDocEntities())
                 {
-
-                    var obj = ctx.Organization.ToList();
+                    var obj = ctx.Organization.Where(o => o.Code == code).FirstOrDefault();
                     if (obj != null)
                     {
-                        StaticOrganization.organizations = obj;
+                        resp.ResultData = obj;
                     }
 
                     resp.Status = true;
-
                 }
             }
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
-            }
-
-            return resp;
-
-
-        }
-
-        public Response GetOrganizationByCode(string Code)
-        {
-            Response resp = new Response();
-            try
-            {
-
-                using (DGAMilDocEntities ctx = new DGAMilDocEntities())
-                {
-
-                    var obj = ctx.Organization.Where(o => o.Code == Code).FirstOrDefault();
-                    if (obj != null)
-                    {
-                        resp.ResponseObject = obj;
-                    }
-
-                    resp.Status = true;
-
-                }
-            }
-            catch (Exception ex)
-            {
-                resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
             }
 
             return resp;
@@ -477,7 +420,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                     var obj = ctx.Organization.Where(o => o.Id == id).FirstOrDefault();
                     if (obj != null)
                     {
-                        resp.ResponseObject = obj;
+                        resp.ResultData = obj;
                     }
 
                     resp.Status = true;
@@ -487,7 +430,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
             }
 
             return resp;
@@ -510,7 +453,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                     if (ctx.Document.Any(o => o.No == doc.No && o.SenderOrganizationId == doc.SenderOrganizationId && o.ReceiverOrganizationId == doc.ReceiverOrganizationId))
                     {
                         resp.Status = false;
-                        resp.Description = "เลขที่หนังสือซ้ำ";
+                        resp.Message = "เลขที่หนังสือซ้ำ";
                     }
                     else
                     {
@@ -520,7 +463,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         resp.Status = true;
                         doc.DocumentAttachment = null;
                         doc.DocumentReference = null;
-                        resp.ResponseObject = doc;
+                        resp.ResultData = doc;
                     }
 
                 }
@@ -528,7 +471,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
             }
 
             return resp;
@@ -551,7 +494,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                     if (ctx.Document.Any(o => o.No == doc.No && o.SenderOrganizationId == doc.SenderOrganizationId && o.ReceiverOrganizationId == doc.ReceiverOrganizationId))
                     {
                         resp.Status = false;
-                        resp.Description = "เลขที่หนังสือซ้ำ";
+                        resp.Message = "เลขที่หนังสือซ้ำ";
                     }
                     else
                     {
@@ -559,7 +502,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         ctx.Document.Add(doc);
                         ctx.SaveChanges();
                         resp.Status = true;
-                        resp.ResponseObject = doc;
+                        resp.ResultData = doc;
                     }
 
                 }
@@ -567,7 +510,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
             }
 
             return resp;
@@ -584,7 +527,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
 
                     if (doc != null)
                     {
-                        resp.ResponseObject = doc;
+                        resp.ResultData = doc;
                     }
                     else
                     {
@@ -609,7 +552,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         ctx.DocumentProcess.Add(docProcess);
 
                         ctx.SaveChanges();
-                        resp.ResponseObject = docIn;
+                        resp.ResultData = docIn;
                     }
 
                     resp.Status = true;
@@ -620,7 +563,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
             }
 
             return resp;
@@ -699,7 +642,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                     resp.Status = true;
                     document.DocumentReference = null;
                     document.DocumentAttachment = null;
-                    resp.ResponseObject = document;
+                    resp.ResultData = document;
                     document.MainAttachmentBinary = null;
 
 
@@ -709,7 +652,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
             }
 
             return resp;
@@ -732,10 +675,10 @@ namespace WEB.API.DGA.MIL.DOC.Services
                             DocumentId = id,
                             AttachmentName = file,
                             AttachmentBinary = files[i],
-                            MimeCode = ConvertContentType(System.IO.Path.GetExtension(file)),
+                            MimeCode = Util.ConvertContentType(System.IO.Path.GetExtension(file)),
                             State = "บันทึก",
                             Type = "1",
-                            FileSize = ConvertBytesToMegabytes(files[i].Length).ToString("N5") + " mb",
+                            FileSize = Util.ConvertBytesToMegabytes(files[i].Length).ToString("N5") + " mb",
                         };
                         ctx.DocumentAttachment.Add(att);
                         i++;
@@ -750,7 +693,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
             }
 
             return resp;
@@ -786,7 +729,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
             }
 
             return resp;
@@ -808,7 +751,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         if (obj.Status == "ปลายทางได้รับหนังสือ")
                         {
                             resp.Status = true;
-                            resp.RequestObject = 0;
+                            resp.ResultData = 0;
                         }
                         else
                         {
@@ -827,7 +770,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
 
                             ctx.SaveChanges();
 
-                            resp.RequestObject = obj.Id;
+                            resp.ResultData = obj.Id;
                             resp.Status = true;
 
                         }
@@ -838,7 +781,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
             }
 
             return resp;
@@ -860,7 +803,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         if (obj.Status == "ปลายทางส่งเลขรับเพื่ออ้างอิง")
                         {
                             resp.Status = true;
-                            resp.RequestObject = 0;
+                            resp.ResultData = 0;
                         }
                         else
                         {
@@ -880,7 +823,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
 
                             ctx.SaveChanges();
 
-                            resp.RequestObject = obj.Id;
+                            resp.ResultData = obj.Id;
                             resp.Status = true;
 
                         }
@@ -891,7 +834,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
             }
 
             return resp;
@@ -913,7 +856,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         if (obj.Status == "ปฏิเสธการรับหนังสือ")
                         {
                             resp.Status = true;
-                            resp.ResponseObject = 0;
+                            resp.ResultData = 0;
 
 
                         }
@@ -933,7 +876,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                             obj.Status = "ปฏิเสธการรับหนังสือ";
                             obj.ProcessId = doc.ProcessId;
                             ctx.SaveChanges();
-                            resp.ResponseObject = obj.Id;
+                            resp.ResultData = obj.Id;
                             resp.Status = true;
 
                         }
@@ -944,7 +887,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
             }
 
             return resp;
@@ -966,7 +909,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         if (obj.Status == "แจ้งหนังสือผิด")
                         {
                             resp.Status = true;
-                            resp.ResponseObject = 0;
+                            resp.ResultData = 0;
                         }
                         else
                         {
@@ -984,7 +927,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                             obj.Status = "แจ้งหนังสือผิด";
                             obj.ProcessId = doc.ProcessId;
                             ctx.SaveChanges();
-                            resp.ResponseObject = obj.Id;
+                            resp.ResultData = obj.Id;
                             resp.Status = true;
 
                         }
@@ -995,7 +938,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
             }
 
             return resp;
@@ -1017,7 +960,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         if (obj.Status == "แจ้งเลขรับผิด")
                         {
                             resp.Status = true;
-                            resp.ResponseObject = 0;
+                            resp.ResultData = 0;
                         }
                         else
                         {
@@ -1034,7 +977,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                             obj.Status = "แจ้งเลขรับผิด";
                             obj.ProcessId = doc.ProcessId;
                             ctx.SaveChanges();
-                            resp.ResponseObject = obj.Id;
+                            resp.ResultData = obj.Id;
                             resp.Status = true;
 
                         }
@@ -1045,7 +988,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
             }
 
             return resp;
@@ -1067,7 +1010,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
 
                         ctx.SaveChanges();
 
-                        resp.RequestObject = obj.Id;
+                        resp.ResultData = obj.Id;
                         resp.Status = true;
 
 
@@ -1078,7 +1021,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
             }
 
             return resp;
@@ -1117,7 +1060,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return resp;
@@ -1137,7 +1081,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         foreach (var attach in doc.DocumentAttachment)
                         {
                             attach.AttachmentBinary = files[i];
-                            attach.FileSize = ConvertBytesToMegabytes(files[i].Length).ToString("N5") + " mb";
+                            attach.FileSize = Util.ConvertBytesToMegabytes(files[i].Length).ToString("N5") + " mb";
                             attach.State = "บันทึก";
                             attach.Type = "1";
                             i++;
@@ -1151,7 +1095,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return resp;
@@ -1168,7 +1113,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                     {
 
                         doc.MainAttachmentBinary = file;
-                        doc.FileSize = ConvertBytesToMegabytes(file.Length).ToString("N5") + " mb";
+                        doc.FileSize = Util.ConvertBytesToMegabytes(file.Length).ToString("N5") + " mb";
 
                         ctx.SaveChanges();
                         resp.Status = true;
@@ -1178,7 +1123,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return resp;
@@ -1202,7 +1148,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return resp;
@@ -1237,7 +1184,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return resp;
@@ -1261,7 +1209,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return resp;
@@ -1285,7 +1234,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return resp;
@@ -1309,7 +1259,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return resp;
@@ -1326,7 +1277,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                     {
                         //doc.Organization = ctx.Organization.Where(o => o.Id == doc.SenderOrganizationId).FirstOrDefault();
                         //doc.Organization1 = ctx.Organization.Where(o => o.Id == doc.ReceiverOrganizationId).FirstOrDefault();
-                        resp.Description = "ลงรับหนังสือซ้า";
+                        resp.Message = "ลงรับหนังสือซ้า";
                         resp.Status = false;
                     }
                     else
@@ -1338,67 +1289,14 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
+                resp.Exception = ex.ToString();
             }
 
             return resp;
         }
 
 
-        static double ConvertBytesToMegabytes(long bytes)
-        {
-            return (bytes / 1024f) / 1024f;
-        }
-
-        public string ConvertContentType(string ext)
-        {
-            string returnType = "";
-            switch (ext)
-            {
-                case ".doc":
-                    returnType = "application/msword";
-                    break;
-                case ".docx":
-                    returnType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-                    break;
-                case ".pdf":
-                    returnType = "application/pdf";
-                    break;
-                case ".rtf":
-                    returnType = "application/rtf";
-                    break;
-                case ".xls":
-                    returnType = "application/vnd.ms-excel";
-                    break;
-                case ".xlsx":
-                    returnType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                    break;
-                case ".zip":
-                    returnType = "application/zip";
-                    break;
-                case ".bmp":
-                    returnType = "image/bmp";
-                    break;
-                case ".png":
-                    returnType = "image/png";
-                    break;
-                case ".tiff":
-                    returnType = "image/tiff";
-                    break;
-                case ".txt":
-                    returnType = "text/plain";
-                    break;
-                case ".ppt":
-                    returnType = "application/vnd.ms-powerpoint";
-                    break;
-                case ".pptx":
-                    returnType = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-                    break;
-            }
-
-            return returnType;
-
-        }
 
     }
 }

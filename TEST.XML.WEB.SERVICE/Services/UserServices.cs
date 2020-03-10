@@ -27,7 +27,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
                     user.Organization.User = null;
                     if (user != null)
                     {
-                        resp.ResponseObject = user;
+                        resp.ResultData = user;
                         resp.Status = true;
                     }
                     else
@@ -39,7 +39,7 @@ namespace WEB.API.DGA.MIL.DOC.Services
             catch (Exception ex)
             {
                 resp.Status = false;
-                resp.Description = ex.Message;
+                resp.Message = ex.Message;
             }
 
             return resp;

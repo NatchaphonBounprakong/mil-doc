@@ -39,7 +39,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
         [HttpGet]
         public JsonResult GetDocumentListByOrganizeId(int organizationId)
         {
-            var resp = docService.GetDocumentListByOrganizeId(organizationId);
+            var resp = docService.GetDocumentListByOrganizationId(organizationId);
 
             return Json(resp, JsonRequestBehavior.AllowGet);
         }
@@ -63,7 +63,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
         [HttpGet]
         public JsonResult GetDocumentInListByOrganizeId(int organizationId)
         {
-            var resp = docService.GetDocumentInListByOrganizeId(organizationId);
+            var resp = docService.GetDocumentInListByOrganizationId(organizationId);
 
             return Json(resp, JsonRequestBehavior.AllowGet);
         }
@@ -195,7 +195,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                     try
                     {
 
-                        var docResponse = docService.GetdocumentWithAtt(resp.ResponseObject.Id);
+                        var docResponse = docService.GetDocumentWithChild(resp.ResultData.Id);
 
                         if (docResponse.Status)
                         {
@@ -203,7 +203,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             var document = (Document)docResponse.ResponseObject;
                             byte[] pdfBytes = document.MainAttachmentBinary;
                             string pdfBase64 = Convert.ToBase64String(pdfBytes);
-                            var receive = docService.GetOrganizationById(document.ReceiverOrganizationId).ResponseObject;
+                            var receive = docService.GetOrganizationById(document.ReceiverOrganizationId).ResultData;
 
                             RequestSendDocOut source = new RequestSendDocOut()
                             {
@@ -294,8 +294,8 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                         ErrorDescription = error[j].ChildNodes[1].InnerXml,
                                     };
 
-                                    resp.Description = error[j].ChildNodes[1].InnerXml + Environment.NewLine;
-                                    resp.ResponseObject = errorDetail;
+                                    resp.Message = error[j].ChildNodes[1].InnerXml + Environment.NewLine;
+                                    resp.ResultData = errorDetail;
 
                                 }
 
@@ -309,15 +309,15 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                     processID = pID[0].InnerXml.ToString();
                                 }
 
-                                resp = docService.UpdateDocumentStatus(resp.ResponseObject.Id, processID, "ส่งหนังสือรอตอบรับ");
-                                resp.ResponseObject = null;
+                                resp = docService.UpdateDocumentStatus(resp.ResultData.Id, processID, "ส่งหนังสือรอตอบรับ");
+                                resp.ResultData = null;
                             }
                         }
                     }
                     catch (Exception ex)
                     {
                         resp.Status = false;
-                        resp.Description = ex.Message;
+                        resp.Message = ex.Message;
                     }
                 }
                 else
@@ -404,7 +404,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
 
 
             var resp = docService.UpdateDocumentAttachment(id, fileBytes);
-            resp.ResponseObject = id;
+            resp.ResultData = id;
             return Json(resp, JsonRequestBehavior.AllowGet);
         }
 
@@ -438,7 +438,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             {
                 api.RequestSendDocument(id);
             }
-            resp.ResponseObject = id;
+            resp.ResultData = id;
             return Json(resp, JsonRequestBehavior.AllowGet);
         }
 
@@ -476,7 +476,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
 
         public static byte[] ConverToBytes(HttpPostedFileBase file)
         {
-            var length = file.InputStream.Length; //Length: 103050706
+            var length = file.InputStream.Length; 
             byte[] fileData = null;
             using (var binaryReader = new BinaryReader(file.InputStream))
             {
