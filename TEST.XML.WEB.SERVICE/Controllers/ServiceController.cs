@@ -195,7 +195,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                     try
                     {
 
-                        var docResponse = docService.GetDocumentWithChild(resp.ResultData.Id);
+                        var docResponse = docService.GetDocumentWithChild(resp.ResponseObject.Id);
 
                         if (docResponse.Status)
                         {
@@ -203,7 +203,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                             var document = (Document)docResponse.ResponseObject;
                             byte[] pdfBytes = document.MainAttachmentBinary;
                             string pdfBase64 = Convert.ToBase64String(pdfBytes);
-                            var receive = docService.GetOrganizationById(document.ReceiverOrganizationId).ResultData;
+                            var receive = docService.GetOrganizationById(document.ReceiverOrganizationId).ResponseObject;
 
                             RequestSendDocOut source = new RequestSendDocOut()
                             {
@@ -294,8 +294,8 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                         ErrorDescription = error[j].ChildNodes[1].InnerXml,
                                     };
 
-                                    resp.Message = error[j].ChildNodes[1].InnerXml + Environment.NewLine;
-                                    resp.ResultData = errorDetail;
+                                    resp.Description = error[j].ChildNodes[1].InnerXml + Environment.NewLine;
+                                    resp.ResponseObject = errorDetail;
 
                                 }
 
@@ -309,15 +309,15 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                                     processID = pID[0].InnerXml.ToString();
                                 }
 
-                                resp = docService.UpdateDocumentStatus(resp.ResultData.Id, processID, "ส่งหนังสือรอตอบรับ");
-                                resp.ResultData = null;
+                                resp = docService.UpdateDocumentStatus(resp.ResponseObject.Id, processID, "ส่งหนังสือรอตอบรับ");
+                                resp.ResponseObject = null;
                             }
                         }
                     }
                     catch (Exception ex)
                     {
                         resp.Status = false;
-                        resp.Message = ex.Message;
+                        resp.Description = ex.Message;
                     }
                 }
                 else
@@ -404,7 +404,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
 
 
             var resp = docService.UpdateDocumentAttachment(id, fileBytes);
-            resp.ResultData = id;
+            resp.ResponseObject = id;
             return Json(resp, JsonRequestBehavior.AllowGet);
         }
 
@@ -438,7 +438,7 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
             {
                 api.RequestSendDocument(id);
             }
-            resp.ResultData = id;
+            resp.ResponseObject = id;
             return Json(resp, JsonRequestBehavior.AllowGet);
         }
 

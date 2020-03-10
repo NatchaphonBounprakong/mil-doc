@@ -25,7 +25,11 @@ namespace WEB.API.DGA.MIL.DOC
 
         public static void SetStaticData()
         {
-            new DocumentServices().GetOrganizationList();
+           var resp = new DocumentServices().GetOrganizationList();
+            if (resp.Status)
+            {
+                StaticOrganization.organizations = resp.ResponseObject;
+            }
         }
     }
 }
