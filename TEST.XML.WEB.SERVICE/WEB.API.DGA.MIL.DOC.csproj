@@ -206,7 +206,6 @@
       <DependentUpon>DgaMilDocDB.edmx</DependentUpon>
       <LastGenOutput>DgaMilDocDB.cs</LastGenOutput>
     </Content>
-    <Content Include="DB\DGAMilDoc.bak" />
     <None Include="packages.config" />
     <Content Include="Views\Layout.cshtml" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
