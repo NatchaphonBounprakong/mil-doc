@@ -17,7 +17,8 @@ namespace WEB.API.DGA.MIL.DOC.Services
             {
                 using (DGAMilDocEntities ctx = new DGAMilDocEntities())
                 {
-                    var user = ctx.User.Include("Organization")
+                    var user = ctx.User
+                        .Include("Organization")
                         .Where(o => o.Username == username && o.Password == password)
                         .FirstOrDefault();
 

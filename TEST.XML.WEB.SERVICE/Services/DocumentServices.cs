@@ -23,7 +23,9 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         .Include("DocumentAttachment")
                         .Include("DocumentReference")
                         .Include("Organization")
-                        .Include("Organization1").Where(o => o.Id == id).FirstOrDefault();
+                        .Include("Organization1")
+                        .Where(o => o.Id == id).FirstOrDefault();
+                  
                     if (doc != null)
                     {
                         doc.MainAttachmentBinary = null;
@@ -214,7 +216,10 @@ namespace WEB.API.DGA.MIL.DOC.Services
 
                 using (DGAMilDocEntities ctx = new DGAMilDocEntities())
                 {
-                    var doc = ctx.Document.Where(o => o.SenderOrganizationId == organizationId).Select(x => new
+                    var doc = ctx.Document
+                        .Where(o => 
+                        o.SenderOrganizationId == organizationId 
+                       ).Select(x => new
                     {
                         Id = x.Id,
                         No = x.No,
@@ -460,9 +465,12 @@ namespace WEB.API.DGA.MIL.DOC.Services
                         doc.CreatedDate = DateTime.Now;
                         ctx.Document.Add(doc);
                         ctx.SaveChanges();
+                        
                         resp.Status = true;
+                       
                         doc.DocumentAttachment = null;
                         doc.DocumentReference = null;
+                        
                         resp.ResponseObject = doc;
                     }
 

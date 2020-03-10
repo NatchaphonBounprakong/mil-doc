@@ -41,8 +41,8 @@ namespace WEB.API.DGA.MIL.DOC.Controllers
                 {
                     var processID = string.Empty;
                     var document = (Document)docResponse.ResponseObject;
-                    byte[] pdfBytes = document.MainAttachmentBinary;
-                    string pdfBase64 = Convert.ToBase64String(pdfBytes);
+                    
+                    string pdfBase64 = Convert.ToBase64String(document.MainAttachmentBinary);
                     var receive = docService.GetOrganizationById(document.ReceiverOrganizationId).ResponseObject;
 
                     RequestSendDocOut source = new RequestSendDocOut()

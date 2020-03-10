@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f28c30ce1ef04efebb728e0beceb7957" Name="Diagram1" ZoomLevel="50">
+        <EntityTypeShape EntityType="DGAMilDocModel.Document" Width="1.5" PointX="3" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DGAMilDocModel.DocumentAttachment" Width="1.5" PointX="5.25" PointY="9.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DGAMilDocModel.DocumentIn" Width="1.5" PointX="3" PointY="11.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DGAMilDocModel.DocumentProcess" Width="1.5" PointX="8.25" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DGAMilDocModel.DocumentReference" Width="1.5" PointX="5.25" PointY="5.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DGAMilDocModel.Organization" Width="1.5" PointX="0.75" PointY="11.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DGAMilDocModel.User" Width="1.5" PointX="0.5" PointY="14.375" IsExpanded="true" />
+        <AssociationConnector Association="DGAMilDocModel.FK_DocumentAttachment_Document" ManuallyRouted="false" />
+        <AssociationConnector Association="DGAMilDocModel.FK_DocumentProcess_Document" ManuallyRouted="false" />
+        <AssociationConnector Association="DGAMilDocModel.FK_DocumentReference_Document" ManuallyRouted="false" />
+        <AssociationConnector Association="DGAMilDocModel.FK_DocumentAttachment_DocumentIn" ManuallyRouted="false" />
+        <AssociationConnector Association="DGAMilDocModel.FK_DocumentIn_Organization" ManuallyRouted="false" />
+        <AssociationConnector Association="DGAMilDocModel.FK_DocumentIn_Organization1" ManuallyRouted="false" />
+        <AssociationConnector Association="DGAMilDocModel.FK_DocumentProcess_DocumentIn" ManuallyRouted="false" />
+        <AssociationConnector Association="DGAMilDocModel.FK_DocumentReference_DocumentIn" ManuallyRouted="false" />
+        <AssociationConnector Association="DGAMilDocModel.FK_User_Organization" ManuallyRouted="false" />
+        <AssociationConnector Association="DGAMilDocModel.FK_Document_Organization" />
+        <AssociationConnector Association="DGAMilDocModel.FK_Document_Organization1" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

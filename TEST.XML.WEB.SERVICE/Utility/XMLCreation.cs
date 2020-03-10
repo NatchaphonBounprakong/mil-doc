@@ -207,7 +207,6 @@ namespace WEB.API.DGA.MIL.DOC.Utility
                             ))));
             return Util.ConvertXmlFormat(soapElement);
         }
-
         //การรับหนังสือภายนอก,การรับหนังสือตอบรับ,การรับหนังสือแจ้งเลขรับ,การรับหนังสือปฏิเสธ,การรับหนังสือแจ้งหนังสือผิด,การรับหนังสือแจ้งเลขรับผิด
         public static string RequestReceiveDocumentLetter(RequestReceive source)
         {
